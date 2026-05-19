@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>教義 — チクショウドウ</title>
+<link href="https://fonts.googleapis.com/css2?family=Kaisei+Decol:wght@400;700&family=Noto+Sans+JP:wght@300;400;500&family=DM+Mono:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5f2eb; --ink: #1a1a18; --muted: #6b6860;
+  --accent: #c8602a; --accent2: #4a7c6f; --light: #e8e4da; --paper: #faf8f3;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--ink); font-family: 'Noto Sans JP', sans-serif; font-weight: 300; overflow-x: hidden; }
+body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events:none; z-index:1000; opacity:0.4; }
+
+nav { position:fixed; top:0; left:0; right:0; z-index:100; padding:1.2rem 2.5rem; display:flex; justify-content:space-between; align-items:center; background:rgba(245,242,235,0.88); backdrop-filter:blur(14px); border-bottom:1px solid rgba(26,26,24,0.08); }
+.nav-logo { font-family:'Kaisei Decol',serif; font-size:1.1rem; letter-spacing:0.15em; color:var(--ink); text-decoration:none; }
+.nav-links { display:flex; gap:2rem; list-style:none; }
+.nav-links a { font-size:0.78rem; letter-spacing:0.1em; color:var(--muted); text-decoration:none; transition:color 0.2s; }
+.nav-links a:hover, .nav-links a.active { color:var(--accent); }
+
+/* PAGE HERO */
+.page-hero {
+  padding: 10rem 2.5rem 5rem;
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 6rem;
+  align-items: end;
+}
+.page-hero-eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.25em;
+  color: var(--accent);
+  margin-bottom: 1.5rem;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.2s forwards;
+}
+.page-hero-title {
+  font-family: 'Kaisei Decol', serif;
+  font-size: clamp(3rem, 6vw, 5.5rem);
+  line-height: 1.1;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.4s forwards;
+}
+.page-hero-title em { color: var(--accent); font-style: normal; }
+.page-hero-desc {
+  font-size: 0.9rem;
+  line-height: 2;
+  color: var(--muted);
+  opacity: 0;
+  animation: fadeUp 0.8s 0.6s forwards;
+}
+
+/* TOC */
+.toc {
+  background: var(--paper);
+  border: 1px solid rgba(26,26,24,0.1);
+  padding: 2rem;
+  opacity: 0;
+  animation: fadeIn 0.8s 0.8s forwards;
+}
+.toc-title {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+  margin-bottom: 1.2rem;
+}
+.toc-list { list-style: none; }
+.toc-list li { border-bottom: 1px solid rgba(26,26,24,0.06); }
+.toc-list li:last-child { border-bottom: none; }
+.toc-list a {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.7rem 0;
+  font-size: 0.82rem;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.toc-list a:hover { color: var(--accent); }
+.toc-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--accent);
+  opacity: 0.6;
+}
+
+/* DIVIDER */
+.divider {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(to right, var(--accent) 0%, transparent 100%);
+  opacity: 0.2;
+  margin: 0;
+}
+
+/* DOCTRINE FULL */
+.doctrine-section {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 5rem 2.5rem;
+}
+.section-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.25em;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 3rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.section-label::after { content:''; flex:1; height:1px; background:var(--accent); opacity:0.25; }
+
+/* CHAPTER LAYOUT */
+.chapter {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 4rem;
+  margin-bottom: 5rem;
+  padding-bottom: 5rem;
+  border-bottom: 1px solid rgba(26,26,24,0.07);
+}
+.chapter:last-child { border-bottom: none; }
+.chapter-num {
+  font-family: 'Kaisei Decol', serif;
+  font-size: 5rem;
+  line-height: 1;
+  color: var(--accent);
+  opacity: 0.15;
+  text-align: right;
+  padding-top: 0.3rem;
+}
+.chapter-content {}
+.chapter-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+  margin-bottom: 0.8rem;
+}
+.chapter-title {
+  font-family: 'Kaisei Decol', serif;
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.25;
+}
+.chapter-body {
+  font-size: 0.92rem;
+  line-height: 2.1;
+  color: var(--muted);
+  max-width: 640px;
+}
+.chapter-body p { margin-bottom: 1.2rem; }
+.chapter-body p:last-child { margin-bottom: 0; }
+.chapter-body strong { color: var(--ink); font-weight: 500; }
+
+/* CALLOUT */
+.callout {
+  background: var(--ink);
+  color: var(--bg);
+  padding: 1.5rem 2rem;
+  margin: 1.8rem 0;
+  border-left: 3px solid var(--accent);
+}
+.callout p {
+  font-family: 'Kaisei Decol', serif;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--bg);
+  margin: 0 !important;
+}
+
+/* SIX REALMS DETAIL */
+.realms-dark {
+  background: var(--ink);
+  color: var(--bg);
+  padding: 6rem 2.5rem;
+}
+.realms-dark-inner { max-width: 1100px; margin: 0 auto; }
+.realms-dark .section-label { color: var(--accent); }
+.realms-dark .section-label::after { background: var(--accent); }
+
+.realm-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5px;
+  background: rgba(245,242,235,0.08);
+  margin-top: 3rem;
+}
+.realm-card {
+  background: var(--ink);
+  padding: 2.5rem 2rem;
+  transition: background 0.25s;
+  position: relative;
+  overflow: hidden;
+}
+.realm-card::before {
+  content: attr(data-kanji);
+  position: absolute;
+  right: -0.5rem;
+  top: -1rem;
+  font-family: 'Kaisei Decol', serif;
+  font-size: 7rem;
+  color: rgba(245,242,235,0.04);
+  line-height: 1;
+  pointer-events: none;
+}
+.realm-card:hover { background: #242422; }
+.realm-card.is-chiku { background: var(--accent2); }
+.realm-card.is-chiku:hover { background: #3d6b60; }
+.realm-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  background: var(--accent);
+  color: var(--bg);
+  padding: 0.2rem 0.5rem;
+  display: inline-block;
+  margin-bottom: 1rem;
+}
+.realm-card-kanji {
+  font-family: 'Kaisei Decol', serif;
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 0.5rem;
+  line-height: 1;
+}
+.realm-card-name {
+  font-size: 0.85rem;
+  letter-spacing: 0.12em;
+  color: rgba(245,242,235,0.6);
+  margin-bottom: 0.3rem;
+}
+.realm-card-old {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  color: rgba(245,242,235,0.3);
+  text-decoration: line-through;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+.realm-card-new {
+  font-size: 0.82rem;
+  line-height: 1.7;
+  color: rgba(245,242,235,0.75);
+}
+
+/* ETHICS TABLE */
+.ethics-section {
+  background: var(--light);
+  padding: 6rem 2.5rem;
+}
+.ethics-inner { max-width: 1100px; margin: 0 auto; }
+.ethics-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  background: rgba(26,26,24,0.1);
+  margin-top: 3rem;
+}
+.ethics-col {
+  background: var(--paper);
+  padding: 2.5rem 2rem;
+}
+.ethics-col-title {
+  font-family: 'Kaisei Decol', serif;
+  font-size: 1.3rem;
+  margin-bottom: 0.4rem;
+}
+.ethics-col-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem;
+  color: var(--accent);
+  letter-spacing: 0.15em;
+  margin-bottom: 1.8rem;
+}
+.ethics-list { list-style: none; }
+.ethics-list li {
+  padding: 0.8rem 0;
+  border-bottom: 1px solid rgba(26,26,24,0.06);
+  font-size: 0.85rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.8rem;
+}
+.ethics-list li:last-child { border-bottom: none; }
+.ethics-list .e-mark {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--accent2);
+  flex-shrink: 0;
+}
+.ethics-list.heavy .e-mark { color: var(--accent); }
+.ethics-list .e-text { color: var(--muted); line-height: 1.6; }
+
+/* DEATH VIEW */
+.death-section {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 6rem 2.5rem;
+  text-align: center;
+}
+.death-title {
+  font-family: 'Kaisei Decol', serif;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  line-height: 1.4;
+  margin-bottom: 2rem;
+}
+.death-title em { color: var(--accent); font-style: normal; }
+.death-body {
+  font-size: 0.9rem;
+  line-height: 2.2;
+  color: var(--muted);
+  margin-bottom: 3rem;
+}
+.death-quote {
+  font-family: 'Kaisei Decol', serif;
+  font-size: 1.2rem;
+  line-height: 1.9;
+  border-top: 1px solid rgba(26,26,24,0.1);
+  border-bottom: 1px solid rgba(26,26,24,0.1);
+  padding: 2rem;
+  margin: 2rem 0;
+  color: var(--ink);
+}
+
+/* FOOTER */
+footer { background:var(--ink); color:rgba(245,242,235,0.4); padding:3rem 2.5rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
+.footer-logo { font-family:'Kaisei Decol',serif; font-size:1rem; color:var(--bg); letter-spacing:0.15em; }
+.footer-nav { display:flex; gap:1.5rem; list-style:none; }
+.footer-nav a { font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.1em; color:rgba(245,242,235,0.4); text-decoration:none; transition:color 0.2s; }
+.footer-nav a:hover { color:var(--accent); }
+.footer-copy { font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.1em; width:100%; margin-top:0.5rem; }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+@media (max-width: 900px) {
+  .page-hero { grid-template-columns: 1fr; gap: 3rem; }
+  .chapter { grid-template-columns: 1fr; gap: 1rem; }
+  .chapter-num { font-size: 3rem; text-align: left; }
+  .realm-cards { grid-template-columns: 1fr 1fr; }
+  .ethics-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  nav { padding:1rem 1.5rem; }
+  .nav-links { display:none; }
+  .realm-cards { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">チクショウドウ</a>
+  <ul class="nav-links">
+    <li><a href="index.html">TOP</a></li>
+    <li><a href="kyogi.html" class="active">教義</a></li>
+    <li><a href="gishiki.html">儀式</a></li>
+    <li><a href="kyoten.html">経典</a></li>
+    <li><a href="index.html#join">参入する</a></li>
+  </ul>
+</nav>
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <div>
+    <p class="page-hero-eyebrow">// DOCTRINE · 教義の全体像</p>
+    <h1 class="page-hero-title">人格を<br><em>降りること</em>の<br>思想体系。</h1>
+  </div>
+  <div>
+    <p class="page-hero-desc">
+      チクショウドウは、既存仏教の輪廻思想を出発点にしながら、
+      人間道中心主義を相対化する。解脱を目指さず、畜生道への還流を
+      肯定的な帰郷として捉え直す思想である。
+    </p>
+    <br>
+    <nav class="toc">
+      <p class="toc-title">// CONTENTS</p>
+      <ul class="toc-list">
+        <li><a href="#origin">01<span class="toc-num">出発点</span></a></li>
+        <li><a href="#suffering">02<span class="toc-num">苦しみの原因</span></a></li>
+        <li><a href="#salvation">03<span class="toc-num">救済観</span></a></li>
+        <li><a href="#realms">04<span class="toc-num">六道の再解釈</span></a></li>
+        <li><a href="#ethics">05<span class="toc-num">倫理体系</span></a></li>
+        <li><a href="#death">06<span class="toc-num">死生観</span></a></li>
+      </ul>
+    </nav>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- CHAPTERS -->
+<div class="doctrine-section">
+  <p class="section-label" id="origin">出発点 · Origin</p>
+
+  <div class="chapter">
+    <div class="chapter-num">01</div>
+    <div class="chapter-content">
+      <p class="chapter-tag">// DEPARTURE POINT</p>
+      <h2 class="chapter-title">「解脱」の困難さへの違和感から</h2>
+      <div class="chapter-body">
+        <p>原始仏教では、輪廻からの脱出——解脱——を目指す。そのためには極めて高い修行が必要とされた。一方で浄土真宗のような他力思想は「南無阿弥陀仏」による救済へと簡略化された。しかしその簡略化は、ある意味で「救済が軽すぎる」という感覚も生む。</p>
+        <div class="callout"><p>そこで本構想では、ゴールそのものを変更する。輪廻から抜け出すのではなく、「畜生道への還流」を肯定的に捉える。</p></div>
+        <p>これは敗北ではない。人間道という「人格の道」が唯一の正解ではないという認識の転換である。どの存在様式も、輪廻という大きな循環の一部に過ぎない。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="chapter" id="suffering">
+    <div class="chapter-num">02</div>
+    <div class="chapter-content">
+      <p class="chapter-tag">// ROOT SUFFERING</p>
+      <h2 class="chapter-title">人格執着という根本苦</h2>
+      <div class="chapter-body">
+        <p>本思想における根本苦は、<strong>「人格執着」</strong>である。「自分という物語を固定・拡張・防衛し続けようとする衝動」と定義する。</p>
+        <p>現代人は以下によって常に人格を濃縮し続けている：自己演出、比較、自己実現、承認欲求、意味探求。この過剰人格化こそが、人間道特有の苦しみを生む。</p>
+        <div class="callout"><p>人格は悪ではない。人格の過剰濃縮が苦しみを生む。</p></div>
+        <p>加藤哲太郎『私は貝になりたい』が示す感覚——それは単なる逃避ではなく、「人格責任から降りたい」という切実な声である。本思想はその感覚を、思想的に正当化しようとする。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="chapter" id="salvation">
+    <div class="chapter-num">03</div>
+    <div class="chapter-content">
+      <p class="chapter-tag">// SALVATION</p>
+      <h2 class="chapter-title">救済とは人格減圧である</h2>
+      <div class="chapter-body">
+        <p>本思想の救済は「人格消滅」ではない。むしろ<strong>「人格減圧」</strong>である。人間を否定するのではなく、「重すぎる人格」から少し降りることを目指す。</p>
+        <p>救済とは次のことである：比較から離れる。意味強迫を緩める。名前への執着を薄める。循環へ戻る。</p>
+        <div class="callout"><p>畜生道は、解脱できなかった敗北地点ではなく、静かな還流先として理解される。</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SIX REALMS DARK -->
+<section class="realms-dark" id="realms">
+  <div class="realms-dark-inner">
+    <p class="section-label">六道の再解釈 · Six Realms Reinterpreted</p>
+    <h2 style="font-family:'Kaisei Decol',serif; font-size:clamp(1.8rem,3.5vw,2.8rem); margin-bottom:1rem;">優劣ではなく、<br>存在様式の違い。</h2>
+    <p style="font-size:0.88rem; line-height:1.9; color:rgba(245,242,235,0.55); max-width:520px; margin-bottom:3rem;">既存仏教の六道は上から下へのヒエラルキーだった。この思想では横並びの存在様式として捉え直す。</p>
+
+    <div class="realm-cards">
+      <div class="realm-card" data-kanji="天">
+        <span class="realm-card-kanji">天</span>
+        <p class="realm-card-name">天道 — HEAVEN</p>
+        <span class="realm-card-old">快楽と安楽の世界</span>
+        <p class="realm-card-new">享楽に溺れやすく、苦しみへの免疫が薄い。過剰な幸福もまた、人格を肥大化させる。</p>
+      </div>
+      <div class="realm-card" data-kanji="人">
+        <span class="realm-card-kanji">人</span>
+        <p class="realm-card-name">人間道 — HUMAN</p>
+        <span class="realm-card-old">苦楽混在、修行可能</span>
+        <p class="realm-card-new">人格の道。自己意識・比較・意味探求が最も強く働く。最も苦しく、最も濃い道。</p>
+      </div>
+      <div class="realm-card" data-kanji="修">
+        <span class="realm-card-kanji">修</span>
+        <p class="realm-card-name">修羅道 — ASURA</p>
+        <span class="realm-card-old">闘争と嫉妬</span>
+        <p class="realm-card-new">勝ち負けの構造に囚われた存在様式。比較が極まった姿。</p>
+      </div>
+      <div class="realm-card is-chiku" data-kanji="畜">
+        <span class="realm-badge">← ここを目指す</span>
+        <span class="realm-card-kanji">畜</span>
+        <p class="realm-card-name">畜生道 — ANIMAL</p>
+        <span class="realm-card-old">無知・本能・低次存在（旧解釈）</span>
+        <p class="realm-card-new">自我負荷の軽い存在様式。循環の道。季節と身体に従い、名前を持たず、忘却する。</p>
+      </div>
+      <div class="realm-card" data-kanji="餓">
+        <span class="realm-card-kanji">餓</span>
+        <p class="realm-card-name">餓鬼道 — HUNGRY GHOST</p>
+        <span class="realm-card-old">欠乏と欲望</span>
+        <p class="realm-card-new">永遠に満たされない欲望の道。強欲と執着が生む苦しみの様式。</p>
+      </div>
+      <div class="realm-card" data-kanji="獄">
+        <span class="realm-card-kanji">獄</span>
+        <p class="realm-card-name">地獄道 — HELL</p>
+        <span class="realm-card-old">苦痛</span>
+        <p class="realm-card-new">純粋な苦痛の様式。ただし、これもまた輪廻の一局面に過ぎない。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ETHICS -->
+<section class="ethics-section" id="ethics">
+  <div class="ethics-inner">
+    <p class="section-label">倫理体系 · Ethics</p>
+    <h2 style="font-family:'Kaisei Decol',serif; font-size:clamp(1.8rem,3vw,2.5rem); margin-bottom:0.8rem;">善悪より、人格密度。</h2>
+    <p style="font-size:0.88rem; line-height:1.9; color:var(--muted); max-width:520px;">この思想の倫理基準は「善悪」ではない。「人格密度」——どれだけ人格を膨らませているか——が基準となる。</p>
+    <div class="ethics-grid">
+      <div class="ethics-col">
+        <h3 class="ethics-col-title">還獣的徳</h3>
+        <p class="ethics-col-sub">// ANIMAL-RETURNING VIRTUE</p>
+        <ul class="ethics-list">
+          <li><span class="e-mark">◎</span><span class="e-text"><strong>無銘</strong>——名前を残そうとしない</span></li>
+          <li><span class="e-mark">◎</span><span class="e-text"><strong>循環</strong>——反復を受け入れる</span></li>
+          <li><span class="e-mark">◎</span><span class="e-text"><strong>共生</strong>——群れ感覚、単独主義の抑制</span></li>
+          <li><span class="e-mark">◎</span><span class="e-text"><strong>身体受容</strong>——痛みも疲れも、ただ感じる</span></li>
+          <li><span class="e-mark">◎</span><span class="e-text"><strong>忘却</strong>——昨日のことを引きずらない</span></li>
+          <li><span class="e-mark">◎</span><span class="e-text"><strong>静かな奉仕</strong>——称賛を求めない行為</span></li>
+          <li><span class="e-mark">◎</span><span class="e-text"><strong>季節性</strong>——自然の循環に同調する</span></li>
+        </ul>
+      </div>
+      <div class="ethics-col">
+        <h3 class="ethics-col-title">人間道カルマ（重）</h3>
+        <p class="ethics-col-sub">// HEAVY HUMAN KARMA</p>
+        <ul class="ethics-list heavy">
+          <li><span class="e-mark">▲</span><span class="e-text"><strong>顕名</strong>——名を刻もうとする欲動</span></li>
+          <li><span class="e-mark">▲</span><span class="e-text"><strong>過剰自己演出</strong>——常に観客を意識する</span></li>
+          <li><span class="e-mark">▲</span><span class="e-text"><strong>比較競争</strong>——他者との優劣を計り続ける</span></li>
+          <li><span class="e-mark">▲</span><span class="e-text"><strong>自己神話化</strong>——自分の物語を壮大にする</span></li>
+          <li><span class="e-mark">▲</span><span class="e-text"><strong>永続化願望</strong>——痕跡を残そうとする衝動</span></li>
+          <li><span class="e-mark">▲</span><span class="e-text"><strong>意味強迫</strong>——全てに意味を求める</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEATH VIEW -->
+<section class="death-section" id="death">
+  <p class="section-label" style="justify-content:center;">死生観 · View of Life and Death</p>
+  <h2 class="death-title">来世で動物になることを、<br><em>恐怖ではなく帰郷として。</em></h2>
+  <p class="death-body">
+    本思想は、輪廻転生を絶対的事実として強制するものではない。
+    むしろ「輪廻という想像力を通して、人格中心性を緩める」ための世界観として機能する。
+    ただし、象徴としてだけでなく、本当に来世で動物になる可能性を静かに肯定する。
+  </p>
+  <blockquote class="death-quote">
+    それは恐怖ではなく、<br>
+    循環への帰郷として受け止められる。
+  </blockquote>
+  <p class="death-body">
+    動物とは、人格負荷を持たない存在形式であり、循環の中にある存在である。
+    そのため動物愛護は、単なる感傷ではなく「人格中心主義の緩和」という思想と接続される。
+  </p>
+  <a href="gishiki.html" class="btn-primary" style="margin-top:1rem;">儀式を見る →</a>
+</section>
+
+<footer>
+  <span class="footer-logo">チクショウドウ</span>
+  <ul class="footer-nav">
+    <li><a href="index.html">TOP</a></li>
+    <li><a href="kyogi.html">教義</a></li>
+    <li><a href="gishiki.html">儀式</a></li>
+    <li><a href="kyoten.html">経典</a></li>
+  </ul>
+  <span class="footer-copy">// 無銘 · 循環 · 還流 · 忘却</span>
+</footer>
+
+</body>
+</html>

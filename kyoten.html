@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>経典 — チクショウドウ</title>
+<link href="https://fonts.googleapis.com/css2?family=Kaisei+Decol:wght@400;700&family=Noto+Sans+JP:wght@300;400;500&family=DM+Mono:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5f2eb; --ink: #1a1a18; --muted: #6b6860;
+  --accent: #c8602a; --accent2: #4a7c6f; --light: #e8e4da; --paper: #faf8f3;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--ink); font-family: 'Noto Sans JP', sans-serif; font-weight: 300; overflow-x: hidden; }
+body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events:none; z-index:1000; opacity:0.4; }
+
+nav { position:fixed; top:0; left:0; right:0; z-index:100; padding:1.2rem 2.5rem; display:flex; justify-content:space-between; align-items:center; background:rgba(245,242,235,0.88); backdrop-filter:blur(14px); border-bottom:1px solid rgba(26,26,24,0.08); }
+.nav-logo { font-family:'Kaisei Decol',serif; font-size:1.1rem; letter-spacing:0.15em; color:var(--ink); text-decoration:none; }
+.nav-links { display:flex; gap:2rem; list-style:none; }
+.nav-links a { font-size:0.78rem; letter-spacing:0.1em; color:var(--muted); text-decoration:none; transition:color 0.2s; }
+.nav-links a:hover, .nav-links a.active { color:var(--accent); }
+
+/* HERO */
+.kyoten-hero {
+  padding: 12rem 2.5rem 6rem;
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6rem;
+  align-items: center;
+}
+.hero-eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.25em;
+  color: var(--accent);
+  margin-bottom: 1.5rem;
+  opacity: 0; animation: fadeUp 0.8s 0.2s forwards;
+}
+.hero-title {
+  font-family: 'Kaisei Decol', serif;
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+  opacity: 0; animation: fadeUp 0.8s 0.4s forwards;
+}
+.hero-title em { color: var(--accent); font-style: normal; }
+.hero-desc {
+  font-size: 0.9rem;
+  line-height: 2;
+  color: var(--muted);
+  opacity: 0; animation: fadeUp 0.8s 0.6s forwards;
+}
+.hero-scroll {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  opacity: 0; animation: fadeIn 0.8s 1s forwards;
+}
+.scroll-item {
+  padding: 1.2rem 1.5rem;
+  background: var(--paper);
+  border: 1px solid rgba(26,26,24,0.08);
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+.scroll-item:hover { border-color: var(--accent); background: var(--light); }
+.scroll-item-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+  margin-bottom: 0.4rem;
+}
+.scroll-item-title {
+  font-family: 'Kaisei Decol', serif;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+/* SECTION LABEL */
+.section-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.25em;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 3rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.section-label::after { content:''; flex:1; height:1px; background:var(--accent); opacity:0.25; }
+
+/* FEATURED SCROLL */
+.featured-section {
+  background: var(--ink);
+  padding: 7rem 2.5rem;
+}
+.featured-inner { max-width: 1100px; margin: 0 auto; }
+.featured-section .section-label { color: var(--accent); }
+.featured-section .section-label::after { background: var(--accent); }
+
+.featured-quote {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 3rem;
+  align-items: start;
+  padding: 4rem 0;
+  border-bottom: 1px solid rgba(245,242,235,0.06);
+}
+.featured-quote:first-of-type { padding-top: 0; }
+.featured-quote:last-of-type { border-bottom: none; }
+.fq-num {
+  font-family: 'Kaisei Decol', serif;
+  font-size: 4rem;
+  color: var(--accent);
+  opacity: 0.2;
+  line-height: 1;
+  text-align: right;
+}
+.fq-body {}
+.fq-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  color: var(--accent);
+  margin-bottom: 1rem;
+}
+.fq-text {
+  font-family: 'Kaisei Decol', serif;
+  font-size: clamp(1.3rem, 2.5vw, 2rem);
+  color: var(--bg);
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+}
+.fq-text em { color: var(--accent); font-style: normal; }
+.fq-commentary {
+  font-size: 0.85rem;
+  line-height: 2;
+  color: rgba(245,242,235,0.5);
+  max-width: 560px;
+}
+
+/* WORD ARCHIVE */
+.words-section {
+  padding: 7rem 2.5rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.words-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5px;
+  background: rgba(26,26,24,0.1);
+}
+.word-card {
+  background: var(--paper);
+  padding: 2rem 1.8rem;
+  transition: background 0.2s;
+  cursor: default;
+}
+.word-card:hover { background: var(--light); }
+.wc-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  color: var(--accent);
+  letter-spacing: 0.15em;
+  margin-bottom: 1rem;
+  opacity: 0.7;
+}
+.wc-text {
+  font-family: 'Kaisei Decol', serif;
+  font-size: 1rem;
+  line-height: 1.8;
+  margin-bottom: 1rem;
+}
+.wc-note {
+  font-size: 0.75rem;
+  line-height: 1.8;
+  color: var(--muted);
+}
+
+/* GLOSSARY */
+.glossary-section {
+  background: var(--light);
+  padding: 7rem 2.5rem;
+}
+.glossary-inner { max-width: 1100px; margin: 0 auto; }
+.glossary-list { list-style: none; }
+.glossary-item {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 3rem;
+  padding: 2rem 0;
+  border-bottom: 1px solid rgba(26,26,24,0.08);
+  align-items: start;
+}
+.glossary-item:last-child { border-bottom: none; }
+.gl-term {
+  font-family: 'Kaisei Decol', serif;
+  font-size: 1.3rem;
+  line-height: 1.3;
+}
+.gl-yomi {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem;
+  color: var(--accent);
+  letter-spacing: 0.12em;
+  display: block;
+  margin-top: 0.2rem;
+}
+.gl-def {
+  font-size: 0.88rem;
+  line-height: 2;
+  color: var(--muted);
+}
+.gl-def strong { color: var(--ink); font-weight: 500; }
+
+/* CANON TEXTS */
+.canon-section {
+  padding: 7rem 2.5rem;
+  max-width: 760px;
+  margin: 0 auto;
+}
+.canon-section .section-label { justify-content: flex-start; }
+.canon-text {
+  margin-bottom: 4rem;
+  padding-bottom: 4rem;
+  border-bottom: 1px solid rgba(26,26,24,0.07);
+}
+.canon-text:last-child { border-bottom: none; margin-bottom: 0; }
+.ct-title {
+  font-family: 'Kaisei Decol', serif;
+  font-size: 1.4rem;
+  margin-bottom: 0.4rem;
+}
+.ct-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem;
+  color: var(--accent);
+  letter-spacing: 0.15em;
+  margin-bottom: 1.8rem;
+}
+.ct-body {
+  font-size: 0.92rem;
+  line-height: 2.4;
+  color: var(--muted);
+}
+.ct-body p { margin-bottom: 1.2rem; }
+.ct-body p:last-child { margin-bottom: 0; }
+
+/* JOIN CTA */
+.join-section {
+  background: var(--ink);
+  padding: 7rem 2.5rem;
+  text-align: center;
+}
+.join-inner { max-width: 560px; margin: 0 auto; }
+.join-title {
+  font-family: 'Kaisei Decol', serif;
+  font-size: 2rem;
+  color: var(--bg);
+  margin-bottom: 1rem;
+}
+.join-desc {
+  font-size: 0.88rem;
+  line-height: 2;
+  color: rgba(245,242,235,0.55);
+  margin-bottom: 2.5rem;
+}
+.join-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+.btn-primary { display:inline-flex; align-items:center; gap:0.5rem; padding:0.85rem 2rem; background:var(--accent); color:var(--bg); text-decoration:none; font-size:0.82rem; letter-spacing:0.1em; transition:background 0.2s,transform 0.15s; }
+.btn-primary:hover { background:#b5521f; transform:translateY(-2px); }
+.btn-ghost { display:inline-flex; align-items:center; gap:0.5rem; padding:0.85rem 2rem; border:1px solid rgba(245,242,235,0.25); color:rgba(245,242,235,0.7); text-decoration:none; font-size:0.82rem; letter-spacing:0.1em; transition:border-color 0.2s,color 0.2s; }
+.btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+footer { background:var(--ink); border-top:1px solid rgba(245,242,235,0.06); color:rgba(245,242,235,0.4); padding:3rem 2.5rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
+.footer-logo { font-family:'Kaisei Decol',serif; font-size:1rem; color:var(--bg); letter-spacing:0.15em; }
+.footer-nav { display:flex; gap:1.5rem; list-style:none; }
+.footer-nav a { font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.1em; color:rgba(245,242,235,0.4); text-decoration:none; transition:color 0.2s; }
+.footer-nav a:hover { color:var(--accent); }
+.footer-copy { font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.1em; width:100%; margin-top:0.5rem; }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+@media (max-width: 900px) {
+  .kyoten-hero { grid-template-columns: 1fr; gap: 3rem; }
+  .words-grid { grid-template-columns: 1fr 1fr; }
+  .glossary-item { grid-template-columns: 1fr; gap: 0.8rem; }
+  .featured-quote { grid-template-columns: 1fr; gap: 1rem; }
+}
+@media (max-width: 600px) {
+  nav { padding:1rem 1.5rem; }
+  .nav-links { display:none; }
+  .words-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">チクショウドウ</a>
+  <ul class="nav-links">
+    <li><a href="index.html">TOP</a></li>
+    <li><a href="kyogi.html">教義</a></li>
+    <li><a href="gishiki.html">儀式</a></li>
+    <li><a href="kyoten.html" class="active">経典</a></li>
+    <li><a href="index.html#join">参入する</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="kyoten-hero">
+  <div>
+    <p class="hero-eyebrow">// SCRIPTURE · 経典と言葉</p>
+    <h1 class="hero-title">断片として<br>残る<em>言葉</em>たち。</h1>
+    <p class="hero-desc">
+      この思想は、完結した体系ではない。<br>
+      断片の積み重ねである。<br>
+      貝殻のように、波に運ばれ、どこかに辿り着く言葉たち。
+    </p>
+  </div>
+  <div class="hero-scroll">
+    <div class="scroll-item">
+      <p class="scroll-item-label">// 還獣訓</p>
+      <p class="scroll-item-title">人格を薄めるための、<br>短い戒め。</p>
+    </div>
+    <div class="scroll-item">
+      <p class="scroll-item-label">// 断章</p>
+      <p class="scroll-item-title">X（Twitter）に流れる<br>思想の断片。</p>
+    </div>
+    <div class="scroll-item">
+      <p class="scroll-item-label">// 用語集</p>
+      <p class="scroll-item-title">この思想固有の<br>言葉の定義。</p>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURED QUOTES -->
+<section class="featured-section" id="kanjiukun">
+  <div class="featured-inner">
+    <p class="section-label">還獣訓 · Kanjiukun</p>
+
+    <div class="featured-quote">
+      <div class="fq-num">一</div>
+      <div class="fq-body">
+        <p class="fq-tag">// 第一訓 · ON NAME</p>
+        <p class="fq-text">今日一度だけ、<em>名前を忘れよ。</em></p>
+        <p class="fq-commentary">名前は人格の錨である。それを一時的に外すことは、沈没ではなく、浮上である。あなたという存在は、名前がなくなっても、ここにある。</p>
+      </div>
+    </div>
+
+    <div class="featured-quote">
+      <div class="fq-num">二</div>
+      <div class="fq-body">
+        <p class="fq-tag">// 第二訓 · ON COMPARISON</p>
+        <p class="fq-text">鳩は昨日の鳩と<em>比較しない。</em></p>
+        <p class="fq-commentary">比較は人間道の病である。昨日の自分、他者の成功、理想の姿——それらとの差が苦しみを生む。今日の体だけが、今日の現実である。</p>
+      </div>
+    </div>
+
+    <div class="featured-quote">
+      <div class="fq-num">三</div>
+      <div class="fq-body">
+        <p class="fq-tag">// 第三訓 · ON MEANING</p>
+        <p class="fq-text">意味を持たない一日を、<em>無駄と呼ぶな。</em></p>
+        <p class="fq-commentary">意味強迫は現代人の慢性病である。全ての日に意味を求め、成長を求め、記録を求める。しかし川は目的なく流れ、それでも海へ辿り着く。</p>
+      </div>
+    </div>
+
+    <div class="featured-quote">
+      <div class="fq-num">四</div>
+      <div class="fq-body">
+        <p class="fq-tag">// 第四訓 · ON MEMORY</p>
+        <p class="fq-text">忘れることは、<em>負けではない。</em></p>
+        <p class="fq-commentary">記憶への執着は、人格の維持コストを高める。忘れた日のことは、すでに川に流れた。それでよい。流れたものは、海の一部になった。</p>
+      </div>
+    </div>
+
+    <div class="featured-quote">
+      <div class="fq-num">五</div>
+      <div class="fq-body">
+        <p class="fq-tag">// 第五訓 · ON EXISTENCE</p>
+        <p class="fq-text">存在することは、<em>すでに十分である。</em></p>
+        <p class="fq-commentary">貝は何も生産しない。鳥は何も残さない。それでも彼らは循環の一部である。あなたも、ただいることで、すでに何かに参加している。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WORD ARCHIVE -->
+<section class="words-section" id="dansho">
+  <p class="section-label">断章 · Fragments</p>
+  <p style="font-size:0.88rem; line-height:2; color:var(--muted); max-width:500px; margin-bottom:3rem;">X（Twitter）に静かに流れる、思想の断片たち。バズらなくてよい。届く人に届けばよい。</p>
+  <div class="words-grid">
+    <div class="word-card">
+      <p class="wc-num">// 断章 001</p>
+      <p class="wc-text">「人格が重い」と感じた日は、正直な日だ。</p>
+      <p class="wc-note">重さを感じることができるのは、まだ降りられる余地があるということ。</p>
+    </div>
+    <div class="word-card">
+      <p class="wc-num">// 断章 002</p>
+      <p class="wc-text">SNSを閉じた瞬間だけ、少し動物に近くなれる。</p>
+      <p class="wc-note">観客がいない時間を持つこと。それが脱名の入口。</p>
+    </div>
+    <div class="word-card">
+      <p class="wc-num">// 断章 003</p>
+      <p class="wc-text">「意味のある一日だったか」と問うのをやめた日から、少し軽くなった。</p>
+      <p class="wc-note">意味の監査官を、自分の中から解雇する。</p>
+    </div>
+    <div class="word-card">
+      <p class="wc-num">// 断章 004</p>
+      <p class="wc-text">猫は昨日の自分を引きずらない。それが羨ましい。</p>
+      <p class="wc-note">忘却は能力である。人間道でのみ、それを恥と感じる。</p>
+    </div>
+    <div class="word-card">
+      <p class="wc-num">// 断章 005</p>
+      <p class="wc-text">自己実現というゴールに疲れた人へ。還る道もある。</p>
+      <p class="wc-note">上昇だけが方向ではない。循環もまた、方向である。</p>
+    </div>
+    <div class="word-card">
+      <p class="wc-num">// 断章 006</p>
+      <p class="wc-text">名前を残さなかった人を、歴史は無視する。でも循環は覚えている。</p>
+      <p class="wc-note">無銘の者は、顕名の者より軽く、遠くへ還れる。</p>
+    </div>
+    <div class="word-card">
+      <p class="wc-num">// 断章 007</p>
+      <p class="wc-text">今夜も、どこかの誰かと同じ時間に眠る。それだけで群れにいる。</p>
+      <p class="wc-note">群睡は儀式であり、孤独の解毒剤でもある。</p>
+    </div>
+    <div class="word-card">
+      <p class="wc-num">// 断章 008</p>
+      <p class="wc-text">承認欲求は、人格を太らせる燃料だ。</p>
+      <p class="wc-note">「いいね」を求めるたびに、人格の維持コストが上がる。</p>
+    </div>
+    <div class="word-card">
+      <p class="wc-num">// 断章 009</p>
+      <p class="wc-text">散歩に目的を持ち込むな。それはもう回遊ではない。</p>
+      <p class="wc-note">ウォーキングと回遊の違いは、目的の有無である。</p>
+    </div>
+  </div>
+</section>
+
+<!-- GLOSSARY -->
+<section class="glossary-section" id="yougo">
+  <div class="glossary-inner">
+    <p class="section-label">用語集 · Glossary</p>
+    <ul class="glossary-list">
+      <li class="glossary-item">
+        <div>
+          <h3 class="gl-term">人格執着</h3>
+          <span class="gl-yomi">じんかくしゅうちゃく</span>
+        </div>
+        <p class="gl-def">本思想における根本苦の概念。「<strong>自分という物語を固定・拡張・防衛し続けようとする衝動</strong>」を指す。自己演出、比較、承認欲求、意味探求などによって人格を濃縮し続ける状態。</p>
+      </li>
+      <li class="glossary-item">
+        <div>
+          <h3 class="gl-term">人格減圧</h3>
+          <span class="gl-yomi">じんかくげんあつ</span>
+        </div>
+        <p class="gl-def">本思想の救済概念。人格の消滅ではなく、「重すぎる人格」から少し降りること。比較から離れ、意味強迫を緩め、循環へ戻ることで達成される。</p>
+      </li>
+      <li class="glossary-item">
+        <div>
+          <h3 class="gl-term">還獣的徳</h3>
+          <span class="gl-yomi">かんじゅうてきとく</span>
+        </div>
+        <p class="gl-def">この思想における徳目。無銘、循環、共生、身体受容、忘却、静かな奉仕、季節性。善悪の基準ではなく、「人格密度を低下させる行為」として定義される。</p>
+      </li>
+      <li class="glossary-item">
+        <div>
+          <h3 class="gl-term">無銘</h3>
+          <span class="gl-yomi">むめい</span>
+        </div>
+        <p class="gl-def">名前を残そうとしない徳。顕名（名を刻もうとする衝動）の対概念。この宗教がカリスマ化を避ける理由でもある。匿名性はこの思想と根本的に整合する。</p>
+      </li>
+      <li class="glossary-item">
+        <div>
+          <h3 class="gl-term">循環の道</h3>
+          <span class="gl-yomi">じゅんかんのみち</span>
+        </div>
+        <p class="gl-def">畜生道の再定義。既存仏教での「低次存在の道」という解釈を退け、「自我負荷の軽い存在様式」「反復と季節の中に生きる道」として肯定的に捉え直したもの。</p>
+      </li>
+      <li class="glossary-item">
+        <div>
+          <h3 class="gl-term">人格密度</h3>
+          <span class="gl-yomi">じんかくみつど</span>
+        </div>
+        <p class="gl-def">本思想の倫理基準。善悪の代わりに用いる概念。「どれだけ自分という物語を膨らませているか」の度合い。高いほど苦しみが増し、低いほど循環に近くなる。</p>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- CANON TEXTS -->
+<section class="canon-section" id="seiten">
+  <p class="section-label">聖典断片 · Sacred Fragments</p>
+
+  <div class="canon-text">
+    <h2 class="ct-title">軽さについて</h2>
+    <p class="ct-sub">// FRAGMENT 001 · ON LIGHTNESS</p>
+    <div class="ct-body">
+      <p>貝になりたいと思ったことがあるか。</p>
+      <p>それは逃げではない。重さへの正直な認識である。</p>
+      <p>人格とは、生きていく上で必要なものだ。しかし必要なものが、過剰になることがある。名前が過剰になり、意味が過剰になり、比較が過剰になる。気づけば、自分という存在が、維持することで手一杯になっている。</p>
+      <p>畜生道は、その過剰から降りた先にある道である。敗北ではなく、還流。消滅ではなく、減圧。そこへ向かうことを、この思想は肯定する。</p>
+    </div>
+  </div>
+
+  <div class="canon-text">
+    <h2 class="ct-title">動物について</h2>
+    <p class="ct-sub">// FRAGMENT 002 · ON ANIMALS</p>
+    <div class="ct-body">
+      <p>動物が偉いと言いたいのではない。</p>
+      <p>動物を理想化するのも、人間の投影に過ぎない。</p>
+      <p>ただ、動物には「人格の過剰濃縮」がない。彼らは比較しない。昨日の自分と今日の自分を並べない。名前を残そうとしない。ただ、今この季節の中で、体として存在している。</p>
+      <p>そのあり方を、低次と呼ぶことをやめる。それがこの思想の出発点である。</p>
+    </div>
+  </div>
+
+  <div class="canon-text">
+    <h2 class="ct-title">輪廻について</h2>
+    <p class="ct-sub">// FRAGMENT 003 · ON REBIRTH</p>
+    <div class="ct-body">
+      <p>来世で動物になることを、信じるかどうかは問わない。</p>
+      <p>ただ、その可能性を「恐怖」ではなく「帰郷」として受け止めることができたとき、何かが軽くなる。</p>
+      <p>輪廻は、脅しの道具ではない。人格中心主義を相対化するための、想像力の構造である。あなたは今、人間道にいる。しかしそれは、無数の存在様式のひとつに過ぎない。</p>
+      <p>その認識だけで、少し降りられる。</p>
+    </div>
+  </div>
+</section>
+
+<!-- JOIN CTA -->
+<section class="join-section">
+  <div class="join-inner">
+    <h2 class="join-title">続きは、noteで。</h2>
+    <p class="join-desc">
+      経典は増え続ける。<br>
+      月に2〜4本、静かに発信していく。<br>
+      定期購読で、群れの一員になる。
+    </p>
+    <div class="join-btns">
+      <a href="https://note.com" class="btn-primary" target="_blank">noteで読む →</a>
+      <a href="https://x.com" class="btn-ghost" target="_blank">Xをフォロー</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span class="footer-logo">チクショウドウ</span>
+  <ul class="footer-nav">
+    <li><a href="index.html">TOP</a></li>
+    <li><a href="kyogi.html">教義</a></li>
+    <li><a href="gishiki.html">儀式</a></li>
+    <li><a href="kyoten.html">経典</a></li>
+  </ul>
+  <span class="footer-copy">// 無銘 · 循環 · 還流 · 忘却</span>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>儀式の手引き — チクショウドウ</title>
+<link href="https://fonts.googleapis.com/css2?family=Kaisei+Decol:wght@400;700&family=Noto+Sans+JP:wght@300;400;500&family=DM+Mono:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5f2eb; --ink: #1a1a18; --muted: #6b6860;
+  --accent: #c8602a; --accent2: #4a7c6f; --light: #e8e4da; --paper: #faf8f3;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--ink); font-family: 'Noto Sans JP', sans-serif; font-weight: 300; overflow-x: hidden; }
+body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events:none; z-index:1000; opacity:0.4; }
+
+nav { position:fixed; top:0; left:0; right:0; z-index:100; padding:1.2rem 2.5rem; display:flex; justify-content:space-between; align-items:center; background:rgba(245,242,235,0.88); backdrop-filter:blur(14px); border-bottom:1px solid rgba(26,26,24,0.08); }
+.nav-logo { font-family:'Kaisei Decol',serif; font-size:1.1rem; letter-spacing:0.15em; color:var(--ink); text-decoration:none; }
+.nav-links { display:flex; gap:2rem; list-style:none; }
+.nav-links a { font-size:0.78rem; letter-spacing:0.1em; color:var(--muted); text-decoration:none; transition:color 0.2s; }
+.nav-links a:hover, .nav-links a.active { color:var(--accent); }
+
+/* HERO — DARK */
+.gishiki-hero {
+  background: var(--ink);
+  min-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 10rem 2.5rem 5rem;
+  position: relative;
+  overflow: hidden;
+}
+.gishiki-hero::before {
+  content: '儀';
+  position: absolute;
+  font-family: 'Kaisei Decol', serif;
+  font-size: 50vw;
+  color: rgba(245,242,235,0.025);
+  right: -10vw;
+  top: 50%;
+  transform: translateY(-50%);
+  line-height: 1;
+  pointer-events: none;
+}
+.hero-inner { max-width: 1100px; margin: 0 auto; width: 100%; }
+.hero-eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.25em;
+  color: var(--accent);
+  margin-bottom: 1.5rem;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.2s forwards;
+}
+.hero-title {
+  font-family: 'Kaisei Decol', serif;
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  color: var(--bg);
+  line-height: 1.15;
+  margin-bottom: 1.5rem;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.4s forwards;
+}
+.hero-title em { color: var(--accent); font-style: normal; }
+.hero-desc {
+  font-size: 0.9rem;
+  line-height: 2;
+  color: rgba(245,242,235,0.55);
+  max-width: 560px;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.6s forwards;
+}
+
+/* PRINCIPLE */
+.principle-bar {
+  background: var(--accent);
+  padding: 1.5rem 2.5rem;
+  display: flex;
+  gap: 3rem;
+  overflow-x: auto;
+}
+.principle-item {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+.principle-icon {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  color: rgba(245,242,235,0.7);
+  letter-spacing: 0.1em;
+}
+.principle-text {
+  font-family: 'Kaisei Decol', serif;
+  font-size: 1rem;
+  color: var(--bg);
+  letter-spacing: 0.05em;
+}
+
+/* SECTION LABEL */
+.section-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.25em;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 3rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.section-label::after { content:''; flex:1; height:1px; background:var(--accent); opacity:0.25; }
+
+/* RITUAL FULL PAGES */
+.rituals-full {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 6rem 2.5rem;
+}
+
+.ritual-block {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  margin-bottom: 1.5px;
+  background: rgba(26,26,24,0.08);
+}
+.ritual-block:nth-child(even) { direction: rtl; }
+.ritual-block:nth-child(even) > * { direction: ltr; }
+
+.ritual-visual {
+  background: var(--ink);
+  padding: 4rem 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 380px;
+  position: relative;
+  overflow: hidden;
+}
+.ritual-visual::before {
+  content: attr(data-icon);
+  position: absolute;
+  font-size: 12rem;
+  right: -1rem;
+  bottom: -2rem;
+  opacity: 0.08;
+  line-height: 1;
+}
+.ritual-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+}
+.ritual-kanji {
+  font-family: 'Kaisei Decol', serif;
+  font-size: 5rem;
+  color: var(--bg);
+  line-height: 1;
+}
+.ritual-roman {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  color: rgba(245,242,235,0.35);
+}
+
+.ritual-content {
+  background: var(--paper);
+  padding: 3.5rem 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.ritual-title {
+  font-family: 'Kaisei Decol', serif;
+  font-size: 1.8rem;
+  margin-bottom: 0.3rem;
+}
+.ritual-yomi {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+  margin-bottom: 1.5rem;
+}
+.ritual-desc {
+  font-size: 0.9rem;
+  line-height: 2;
+  color: var(--muted);
+  margin-bottom: 2rem;
+}
+.ritual-how-title {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  color: var(--ink);
+  margin-bottom: 0.8rem;
+  opacity: 0.5;
+}
+.ritual-steps {
+  list-style: none;
+  counter-reset: step;
+}
+.ritual-steps li {
+  counter-increment: step;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid rgba(26,26,24,0.06);
+  font-size: 0.82rem;
+  line-height: 1.7;
+  color: var(--muted);
+  display: flex;
+  gap: 1rem;
+}
+.ritual-steps li:last-child { border-bottom: none; }
+.ritual-steps li::before {
+  content: counter(step, decimal-leading-zero);
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--accent);
+  flex-shrink: 0;
+  padding-top: 0.15rem;
+}
+.ritual-note {
+  margin-top: 1.5rem;
+  padding: 1rem 1.2rem;
+  background: var(--light);
+  font-size: 0.78rem;
+  line-height: 1.8;
+  color: var(--muted);
+  border-left: 2px solid var(--accent2);
+}
+
+/* DAILY RHYTHM */
+.rhythm-section {
+  background: var(--light);
+  padding: 6rem 2.5rem;
+}
+.rhythm-inner { max-width: 1100px; margin: 0 auto; }
+.rhythm-timeline {
+  margin-top: 3rem;
+  position: relative;
+}
+.rhythm-timeline::before {
+  content: '';
+  position: absolute;
+  left: 120px;
+  top: 0; bottom: 0;
+  width: 1px;
+  background: rgba(26,26,24,0.12);
+}
+.rhythm-item {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 2.5rem;
+  padding: 1.8rem 0;
+  border-bottom: 1px solid rgba(26,26,24,0.06);
+  align-items: start;
+}
+.rhythm-item:last-child { border-bottom: none; }
+.rhythm-time {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+  text-align: right;
+  padding-top: 0.2rem;
+}
+.rhythm-content { padding-left: 2rem; }
+.rhythm-name {
+  font-family: 'Kaisei Decol', serif;
+  font-size: 1.1rem;
+  margin-bottom: 0.3rem;
+}
+.rhythm-detail {
+  font-size: 0.8rem;
+  line-height: 1.8;
+  color: var(--muted);
+}
+.rhythm-tag {
+  display: inline-block;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  background: var(--accent2);
+  color: var(--bg);
+  padding: 0.15rem 0.5rem;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+}
+
+/* PRINCIPLE SECTION */
+.principles-section {
+  background: var(--ink);
+  padding: 6rem 2.5rem;
+  color: var(--bg);
+}
+.principles-inner { max-width: 1100px; margin: 0 auto; }
+.principles-section .section-label { color: var(--accent); }
+.principles-section .section-label::after { background: var(--accent); }
+
+.principles-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin-top: 3rem;
+}
+.principle-card {
+  border: 1px solid rgba(245,242,235,0.08);
+  padding: 2rem;
+  transition: border-color 0.2s;
+}
+.principle-card:hover { border-color: var(--accent); }
+.pc-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--accent);
+  letter-spacing: 0.2em;
+  margin-bottom: 1rem;
+}
+.pc-title {
+  font-family: 'Kaisei Decol', serif;
+  font-size: 1.3rem;
+  margin-bottom: 0.8rem;
+}
+.pc-body {
+  font-size: 0.82rem;
+  line-height: 1.9;
+  color: rgba(245,242,235,0.55);
+}
+
+/* CTA */
+.gishiki-cta {
+  padding: 6rem 2.5rem;
+  text-align: center;
+  max-width: 640px;
+  margin: 0 auto;
+}
+.gishiki-cta h2 {
+  font-family: 'Kaisei Decol', serif;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+.gishiki-cta p {
+  font-size: 0.88rem;
+  line-height: 2;
+  color: var(--muted);
+  margin-bottom: 2rem;
+}
+.cta-row { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+.btn-primary { display:inline-flex; align-items:center; gap:0.5rem; padding:0.85rem 2rem; background:var(--ink); color:var(--bg); text-decoration:none; font-size:0.82rem; letter-spacing:0.1em; transition:background 0.2s,transform 0.15s; }
+.btn-primary:hover { background:var(--accent); transform:translateY(-2px); }
+.btn-secondary { display:inline-flex; align-items:center; gap:0.5rem; padding:0.85rem 2rem; border:1px solid var(--ink); color:var(--ink); text-decoration:none; font-size:0.82rem; letter-spacing:0.1em; transition:background 0.2s,color 0.2s; }
+.btn-secondary:hover { background:var(--ink); color:var(--bg); }
+
+footer { background:var(--ink); color:rgba(245,242,235,0.4); padding:3rem 2.5rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
+.footer-logo { font-family:'Kaisei Decol',serif; font-size:1rem; color:var(--bg); letter-spacing:0.15em; }
+.footer-nav { display:flex; gap:1.5rem; list-style:none; }
+.footer-nav a { font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.1em; color:rgba(245,242,235,0.4); text-decoration:none; transition:color 0.2s; }
+.footer-nav a:hover { color:var(--accent); }
+.footer-copy { font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.1em; width:100%; margin-top:0.5rem; }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+@media (max-width: 900px) {
+  .ritual-block { grid-template-columns: 1fr; direction: ltr !important; }
+  .ritual-block:nth-child(even) { direction: ltr; }
+  .ritual-visual { min-height: 220px; }
+  .principles-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  nav { padding:1rem 1.5rem; }
+  .nav-links { display:none; }
+  .rhythm-timeline::before { left: 80px; }
+  .rhythm-item { grid-template-columns: 80px 1fr; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">チクショウドウ</a>
+  <ul class="nav-links">
+    <li><a href="index.html">TOP</a></li>
+    <li><a href="kyogi.html">教義</a></li>
+    <li><a href="gishiki.html" class="active">儀式</a></li>
+    <li><a href="kyoten.html">経典</a></li>
+    <li><a href="index.html#join">参入する</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="gishiki-hero">
+  <div class="hero-inner">
+    <p class="hero-eyebrow">// RITUAL GUIDE · 儀式の手引き</p>
+    <h1 class="hero-title">熱狂ではなく、<br><em>減圧のための</em><br>実践。</h1>
+    <p class="hero-desc">儀式の目的は「人格を薄める体験」をつくることである。静かに、匿名に、非同期に、低熱量で。</p>
+  </div>
+</section>
+
+<!-- PRINCIPLE BAR -->
+<div class="principle-bar">
+  <div class="principle-item">
+    <span class="principle-icon">01 //</span>
+    <span class="principle-text">静か</span>
+  </div>
+  <div class="principle-item">
+    <span class="principle-icon">02 //</span>
+    <span class="principle-text">匿名</span>
+  </div>
+  <div class="principle-item">
+    <span class="principle-icon">03 //</span>
+    <span class="principle-text">非同期</span>
+  </div>
+  <div class="principle-item">
+    <span class="principle-icon">04 //</span>
+    <span class="principle-text">低熱量</span>
+  </div>
+  <div class="principle-item">
+    <span class="principle-icon">05 //</span>
+    <span class="principle-text">反復可能</span>
+  </div>
+</div>
+
+<!-- FOUR RITUALS -->
+<section class="rituals-full">
+  <p class="section-label">四儀式 · Four Practices</p>
+
+  <!-- 換毛 -->
+  <div class="ritual-block">
+    <div class="ritual-visual" data-icon="🪶">
+      <div>
+        <p class="ritual-num">// 01</p>
+      </div>
+      <div>
+        <div class="ritual-kanji">換毛</div>
+        <div class="ritual-roman">KANMOU</div>
+      </div>
+    </div>
+    <div class="ritual-content">
+      <h2 class="ritual-title">換毛</h2>
+      <p class="ritual-yomi">かんもう · KANMOU</p>
+      <p class="ritual-desc">
+        1日の終わりに、今日の自分という人格を静かに脱ぐ時間。
+        鳥が羽を換えるように、動物が毛を落とすように——
+        今日という役割を、静かに床に置いていく。
+      </p>
+      <p class="ritual-how-title">// HOW TO</p>
+      <ol class="ritual-steps">
+        <li>入浴前、または就寝30分前に行う</li>
+        <li>スマートフォンを伏せる。画面を見ない</li>
+        <li>今日呼ばれた自分の名前を頭に浮かべ、それを手放すイメージをする</li>
+        <li>15〜20分、何もしない。ただ呼吸と体感に意識を向ける</li>
+        <li>終わったら、今日の人格を脱いだことを静かに確認する</li>
+      </ol>
+      <p class="ritual-note">コミュニティでは「換毛完了」と一言だけ投稿する慣習がある。名前は不要。</p>
+    </div>
+  </div>
+
+  <!-- 回遊 -->
+  <div class="ritual-block">
+    <div class="ritual-visual" data-icon="🌊">
+      <div>
+        <p class="ritual-num">// 02</p>
+      </div>
+      <div>
+        <div class="ritual-kanji">回遊</div>
+        <div class="ritual-roman">KAIYU</div>
+      </div>
+    </div>
+    <div class="ritual-content">
+      <h2 class="ritual-title">回遊</h2>
+      <p class="ritual-yomi">かいゆう · KAIYU</p>
+      <p class="ritual-desc">
+        目的のない散歩。魚が海を回遊するように、
+        どこへ向かうかを決めずにただ体が向かう方へ動く。
+        「目的地を持つ」ことは人間道的行為である。回遊は目的を手放す練習。
+      </p>
+      <p class="ritual-how-title">// HOW TO</p>
+      <ol class="ritual-steps">
+        <li>行き先を決めずに外へ出る</li>
+        <li>イヤホンは外す。地図は見ない</li>
+        <li>「どこへ行くべきか」を考えず、足が向く方へ歩く</li>
+        <li>時間も決めない。疲れたら戻る</li>
+        <li>帰宅後、どこを通ったかは記録しない</li>
+      </ol>
+      <p class="ritual-note">週1回が目安。雨の日に行うと、さらに感覚が開く。</p>
+    </div>
+  </div>
+
+  <!-- 群睡 -->
+  <div class="ritual-block">
+    <div class="ritual-visual" data-icon="🌙">
+      <div>
+        <p class="ritual-num">// 03</p>
+      </div>
+      <div>
+        <div class="ritual-kanji">群睡</div>
+        <div class="ritual-roman">GUNSUI</div>
+      </div>
+    </div>
+    <div class="ritual-content">
+      <h2 class="ritual-title">群睡</h2>
+      <p class="ritual-yomi">ぐんすい · GUNSUI</p>
+      <p class="ritual-desc">
+        同じ時間帯に、同じように眠る。
+        動物の群れが示す温かさ——それは言葉を交わすことではなく、
+        同じリズムで息をしていることにある。非同期で、匿名で、群れとして。
+      </p>
+      <p class="ritual-how-title">// HOW TO</p>
+      <ol class="ritual-steps">
+        <li>毎晩22時〜24時のどこかで眠りにつく（任意の時間）</li>
+        <li>眠る前に「今夜も群れと眠る」と一度だけ思う</li>
+        <li>眠れなくてもよい。横になるだけでも参加とする</li>
+        <li>朝、目が覚めたとき「群れから戻った」と感じる</li>
+      </ol>
+      <p class="ritual-note">名前も顔も知らない誰かと同じ時間に眠ることが、この儀式の核心である。</p>
+    </div>
+  </div>
+
+  <!-- 脱名 -->
+  <div class="ritual-block">
+    <div class="ritual-visual" data-icon="〇">
+      <div>
+        <p class="ritual-num">// 04</p>
+      </div>
+      <div>
+        <div class="ritual-kanji">脱名</div>
+        <div class="ritual-roman">DATSUMEI</div>
+      </div>
+    </div>
+    <div class="ritual-content">
+      <h2 class="ritual-title">脱名</h2>
+      <p class="ritual-yomi">だつめい · DATSUMEI</p>
+      <p class="ritual-desc">
+        一定時間、名前を使わない。
+        SNSを閉じ、肩書きを忘れ、ただ存在する。
+        名前は人格の錨である。それを外すことで、存在が少し軽くなる。
+      </p>
+      <p class="ritual-how-title">// HOW TO</p>
+      <ol class="ritual-steps">
+        <li>1〜3時間、SNSを全て閉じる</li>
+        <li>自分の名前・肩書きを意識から外す</li>
+        <li>他者に自己紹介しない状況に身を置く（一人でいる、自然の中にいるなど）</li>
+        <li>「私は〇〇だ」という思考が来たら、静かにそれを流す</li>
+        <li>終わりの時間は決めてよい。強制ではない</li>
+      </ol>
+      <p class="ritual-note">週1回の完全脱名日（丸一日）を目標にする者もいる。強制はしない。</p>
+    </div>
+  </div>
+</section>
+
+<!-- DAILY RHYTHM -->
+<section class="rhythm-section">
+  <div class="rhythm-inner">
+    <p class="section-label">還獣的な一日 · A Day of Animal-Return</p>
+    <h2 style="font-family:'Kaisei Decol',serif; font-size:clamp(1.8rem,3vw,2.5rem); margin-bottom:0.5rem;">理想ではなく、<br>参照としての一日。</h2>
+    <p style="font-size:0.85rem; line-height:2; color:var(--muted); margin-bottom:0; max-width:480px;">これは義務ではない。ただの、一つのリズムの例である。</p>
+    <div class="rhythm-timeline">
+      <div class="rhythm-item">
+        <div class="rhythm-time">06:00</div>
+        <div class="rhythm-content">
+          <h3 class="rhythm-name">起床 <span class="rhythm-tag">身体性</span></h3>
+          <p class="rhythm-detail">アラームより少し早く目が覚めたなら、それに従う。スマートフォンを見るより先に、窓の外を見る。</p>
+        </div>
+      </div>
+      <div class="rhythm-item">
+        <div class="rhythm-time">朝</div>
+        <div class="rhythm-content">
+          <h3 class="rhythm-name">回遊（短版）<span class="rhythm-tag">回遊</span></h3>
+          <p class="rhythm-detail">通勤経路を少しだけ変える。目的地は変えなくてよい。ただ、いつもと違う角を曲がる。</p>
+        </div>
+      </div>
+      <div class="rhythm-item">
+        <div class="rhythm-time">日中</div>
+        <div class="rhythm-content">
+          <h3 class="rhythm-name">脱名の瞬間 <span class="rhythm-tag">脱名</span></h3>
+          <p class="rhythm-detail">誰にも見られていない瞬間が来たら、5分だけ名前を忘れる。トイレでも、階段でも。</p>
+        </div>
+      </div>
+      <div class="rhythm-item">
+        <div class="rhythm-time">夕方</div>
+        <div class="rhythm-content">
+          <h3 class="rhythm-name">動物観察</h3>
+          <p class="rhythm-detail">鳩、猫、虫——何でもよい。1分だけ、ただ観る。判断しない。「かわいい」も言わない。</p>
+        </div>
+      </div>
+      <div class="rhythm-item">
+        <div class="rhythm-time">22:00</div>
+        <div class="rhythm-content">
+          <h3 class="rhythm-name">換毛 <span class="rhythm-tag">換毛</span></h3>
+          <p class="rhythm-detail">今日の人格を脱ぐ。スマートフォンを伏せる。入浴、または静かな時間。</p>
+        </div>
+      </div>
+      <div class="rhythm-item">
+        <div class="rhythm-time">眠前</div>
+        <div class="rhythm-content">
+          <h3 class="rhythm-name">群睡 <span class="rhythm-tag">群睡</span></h3>
+          <p class="rhythm-detail">今夜も、名前を知らない誰かと同じ時間に眠る。それだけでよい。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRINCIPLES -->
+<section class="principles-section">
+  <div class="principles-inner">
+    <p class="section-label">儀式の原則 · Principles</p>
+    <h2 style="font-family:'Kaisei Decol',serif; font-size:clamp(1.8rem,3vw,2.5rem); color:var(--bg); margin-bottom:3rem;">この宗教が求めないもの。</h2>
+    <div class="principles-grid">
+      <div class="principle-card">
+        <p class="pc-num">// 求めない 01</p>
+        <h3 class="pc-title">熱狂</h3>
+        <p class="pc-body">集会で叫ぶことも、感動の涙も、必要ない。静かに、低温で続けることが本質である。高揚は人格を膨らませる。</p>
+      </div>
+      <div class="principle-card">
+        <p class="pc-num">// 求めない 02</p>
+        <h3 class="pc-title">完璧な実践</h3>
+        <p class="pc-body">儀式を毎日完璧にこなす必要はない。できたときにやる。それだけでよい。義務化した瞬間、儀式は人格の負荷になる。</p>
+      </div>
+      <div class="principle-card">
+        <p class="pc-num">// 求めない 03</p>
+        <h3 class="pc-title">報告と承認</h3>
+        <p class="pc-body">「換毛完了」と一言投稿するのは任意である。承認を得るためではなく、群れの気配を感じるためだけに行う。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="gishiki-cta">
+  <h2>思想を読む。</h2>
+  <p>儀式の背景にある考え方を知りたい方は、教義のページへ。言葉そのものに触れたい方は、経典へ。</p>
+  <div class="cta-row">
+    <a href="kyogi.html" class="btn-primary">教義を読む →</a>
+    <a href="kyoten.html" class="btn-secondary">経典へ</a>
+  </div>
+</section>
+
+<footer>
+  <span class="footer-logo">チクショウドウ</span>
+  <ul class="footer-nav">
+    <li><a href="index.html">TOP</a></li>
+    <li><a href="kyogi.html">教義</a></li>
+    <li><a href="gishiki.html">儀式</a></li>
+    <li><a href="kyoten.html">経典</a></li>
+  </ul>
+  <span class="footer-copy">// 無銘 · 循環 · 還流 · 忘却</span>
+</footer>
+
+</body>
+</html>

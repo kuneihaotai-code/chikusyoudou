@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>チクショウドウ — 人格を、少し軽くする。</title>
+<link href="https://fonts.googleapis.com/css2?family=Kaisei+Decol:wght@400;700&family=Noto+Sans+JP:wght@300;400;500&family=DM+Mono:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f2eb;
+    --ink: #1a1a18;
+    --muted: #6b6860;
+    --accent: #c8602a;
+    --accent2: #4a7c6f;
+    --light: #e8e4da;
+    --paper: #faf8f3;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Noto Sans JP', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 1.2rem 2.5rem;
+    display: flex; justify-content: space-between; align-items: center;
+    background: rgba(245,242,235,0.88);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(26,26,24,0.08);
+  }
+  .nav-logo { font-family:'Kaisei Decol',serif; font-size:1.1rem; letter-spacing:0.15em; color:var(--ink); text-decoration:none; }
+  .nav-links { display:flex; gap:2rem; list-style:none; }
+  .nav-links a { font-size:0.78rem; letter-spacing:0.1em; color:var(--muted); text-decoration:none; transition:color 0.2s; }
+  .nav-links a:hover { color:var(--accent); }
+  .nav-links a.active { color:var(--accent); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 8rem 2.5rem 4rem;
+    gap: 4rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .hero-eyebrow {
+    font-family:'DM Mono',monospace; font-size:0.72rem; letter-spacing:0.2em;
+    color:var(--accent); margin-bottom:1.5rem;
+    opacity:0; animation:fadeUp 0.8s 0.2s forwards;
+  }
+  .hero-title {
+    font-family:'Kaisei Decol',serif;
+    font-size:clamp(2.8rem,5vw,4.5rem);
+    line-height:1.15; letter-spacing:-0.01em; margin-bottom:1.5rem;
+    opacity:0; animation:fadeUp 0.8s 0.4s forwards;
+  }
+  .hero-title span { color:var(--accent); position:relative; }
+  .hero-title span::after {
+    content:''; position:absolute; bottom:2px; left:0; right:0;
+    height:3px; background:var(--accent); opacity:0.3;
+  }
+  .hero-sub {
+    font-size:1rem; line-height:1.9; color:var(--muted); margin-bottom:2.5rem;
+    opacity:0; animation:fadeUp 0.8s 0.6s forwards;
+  }
+  .hero-cta {
+    display:inline-flex; align-items:center; gap:0.6rem;
+    padding:0.85rem 2rem; background:var(--ink); color:var(--bg);
+    text-decoration:none; font-size:0.85rem; letter-spacing:0.08em;
+    transition:background 0.2s,transform 0.2s;
+    opacity:0; animation:fadeUp 0.8s 0.8s forwards;
+  }
+  .hero-cta:hover { background:var(--accent); transform:translateY(-2px); }
+
+  .hero-right {
+    display:flex; justify-content:center; align-items:center;
+    opacity:0; animation:fadeIn 1.2s 0.5s forwards;
+  }
+  .mandala { width:min(420px,90vw); height:min(420px,90vw); position:relative; }
+  .mandala svg { width:100%; height:100%; animation:rotateSlow 40s linear infinite; }
+  .mandala-center {
+    position:absolute; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    flex-direction:column; gap:0.3rem;
+  }
+  .mandala-kanji { font-family:'Kaisei Decol',serif; font-size:3.5rem; color:var(--ink); line-height:1; }
+  .mandala-sub { font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.2em; color:var(--muted); }
+
+  /* TICKER */
+  .ticker-wrap {
+    overflow:hidden; background:var(--ink); color:var(--bg);
+    padding:0.9rem 0;
+    border-top:2px solid var(--accent); border-bottom:2px solid var(--accent);
+  }
+  .ticker { display:flex; gap:4rem; animation:ticker 30s linear infinite; white-space:nowrap; }
+  .ticker span { font-family:'DM Mono',monospace; font-size:0.75rem; letter-spacing:0.15em; opacity:0.8; flex-shrink:0; }
+  .ticker-dot { color:var(--accent); margin:0 1rem; }
+
+  /* SECTION LABEL */
+  .section-label {
+    font-family:'DM Mono',monospace; font-size:0.7rem; letter-spacing:0.25em;
+    color:var(--accent); text-transform:uppercase; margin-bottom:3rem;
+    display:flex; align-items:center; gap:1rem;
+  }
+  .section-label::after { content:''; flex:1; height:1px; background:var(--accent); opacity:0.25; }
+
+  /* DOCTRINE */
+  .section { padding:7rem 2.5rem; max-width:1100px; margin:0 auto; }
+  .doctrine-grid {
+    display:grid; grid-template-columns:repeat(3,1fr);
+    gap:1.5px; background:rgba(26,26,24,0.1);
+  }
+  .doctrine-card { background:var(--paper); padding:2.5rem 2rem; transition:background 0.2s; }
+  .doctrine-card:hover { background:var(--light); }
+  .doctrine-num { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--accent); letter-spacing:0.2em; margin-bottom:1rem; }
+  .doctrine-title { font-family:'Kaisei Decol',serif; font-size:1.5rem; margin-bottom:0.8rem; }
+  .doctrine-body { font-size:0.85rem; line-height:1.9; color:var(--muted); }
+
+  /* PAGE LINKS GRID */
+  .pages-section { background:var(--ink); padding:7rem 2.5rem; }
+  .pages-inner { max-width:1100px; margin:0 auto; }
+  .pages-section .section-label { color:var(--accent); }
+  .pages-section .section-label::after { background:var(--accent); }
+  .pages-grid {
+    display:grid; grid-template-columns:repeat(3,1fr);
+    gap:1.5px; background:rgba(245,242,235,0.08);
+  }
+  .page-card {
+    background:var(--ink); padding:3rem 2.5rem;
+    text-decoration:none; color:var(--bg);
+    display:flex; flex-direction:column; justify-content:space-between;
+    min-height:280px; transition:background 0.2s; position:relative; overflow:hidden;
+  }
+  .page-card::before {
+    content:attr(data-bg);
+    position:absolute; right:-0.5rem; bottom:-1.5rem;
+    font-family:'Kaisei Decol',serif; font-size:8rem;
+    color:rgba(245,242,235,0.04); line-height:1; pointer-events:none;
+  }
+  .page-card:hover { background:#242422; }
+  .pc-tag { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.2em; color:var(--accent); margin-bottom:1.5rem; }
+  .pc-title { font-family:'Kaisei Decol',serif; font-size:1.8rem; line-height:1.2; margin-bottom:0.8rem; }
+  .pc-desc { font-size:0.8rem; line-height:1.8; color:rgba(245,242,235,0.5); flex:1; }
+  .pc-arrow { font-family:'DM Mono',monospace; font-size:0.72rem; letter-spacing:0.15em; color:var(--accent); margin-top:2rem; }
+
+  /* SIX REALMS */
+  .realms-section { background:var(--ink); padding:7rem 2.5rem; }
+  .realms-inner { max-width:1100px; margin:0 auto; }
+  .realms-section .section-label { color:var(--accent); }
+  .realms-section .section-label::after { background:var(--accent); }
+  .realms-title { font-family:'Kaisei Decol',serif; font-size:clamp(2rem,4vw,3rem); margin-bottom:1rem; color:var(--bg); line-height:1.2; }
+  .realms-desc { font-size:0.9rem; line-height:1.9; color:rgba(245,242,235,0.6); max-width:520px; margin-bottom:4rem; }
+  .realms-list {
+    display:grid; grid-template-columns:repeat(6,1fr);
+    gap:1px; background:rgba(245,242,235,0.1);
+  }
+  .realm-item {
+    background:var(--ink); padding:2rem 1.2rem; text-align:center;
+    transition:background 0.2s; position:relative; overflow:hidden;
+  }
+  .realm-item:hover { background:#2a2a28; }
+  .realm-item.highlight { background:var(--accent2); }
+  .realm-item.highlight::after {
+    content:'← いまここ'; position:absolute; bottom:0.5rem; left:0; right:0;
+    font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.1em;
+    color:rgba(245,242,235,0.7); text-align:center;
+  }
+  .realm-kanji { font-family:'Kaisei Decol',serif; font-size:2rem; display:block; margin-bottom:0.5rem; color:var(--bg); }
+  .realm-name { font-size:0.72rem; letter-spacing:0.12em; color:rgba(245,242,235,0.5); display:block; margin-bottom:0.3rem; }
+  .realm-note { font-family:'DM Mono',monospace; font-size:0.6rem; color:rgba(245,242,235,0.35); }
+
+  /* KARMA */
+  .karma-section { padding:7rem 2.5rem; max-width:1100px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:6rem; align-items:start; }
+  .karma-left h2 { font-family:'Kaisei Decol',serif; font-size:clamp(2rem,3.5vw,2.8rem); line-height:1.25; margin-bottom:1.5rem; }
+  .karma-left p { font-size:0.9rem; line-height:2; color:var(--muted); }
+  .karma-table { border:1px solid rgba(26,26,24,0.12); }
+  .karma-row { display:grid; grid-template-columns:1fr 1fr; border-bottom:1px solid rgba(26,26,24,0.08); }
+  .karma-row:last-child { border-bottom:none; }
+  .karma-cell { padding:1rem 1.2rem; font-size:0.82rem; line-height:1.6; }
+  .karma-cell:first-child { border-right:1px solid rgba(26,26,24,0.08); color:var(--muted); font-family:'DM Mono',monospace; font-size:0.72rem; letter-spacing:0.05em; background:var(--light); }
+  .karma-cell.good { color:var(--accent2); }
+  .karma-cell.bad { color:var(--accent); }
+
+  /* RITUALS */
+  .rituals-section { background:var(--light); padding:7rem 2.5rem; }
+  .rituals-inner { max-width:1100px; margin:0 auto; }
+  .ritual-cards { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-top:3rem; }
+  .ritual-card {
+    background:var(--paper); padding:2rem 1.5rem;
+    border:1px solid rgba(26,26,24,0.08);
+    transition:transform 0.2s,box-shadow 0.2s;
+    text-decoration:none; color:var(--ink); display:block;
+  }
+  .ritual-card:hover { transform:translateY(-4px); box-shadow:0 12px 32px rgba(26,26,24,0.08); }
+  .ritual-icon { font-size:2.2rem; display:block; margin-bottom:1rem; }
+  .ritual-name { font-family:'Kaisei Decol',serif; font-size:1.2rem; margin-bottom:0.4rem; }
+  .ritual-yomi { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--accent); letter-spacing:0.15em; margin-bottom:0.8rem; }
+  .ritual-desc { font-size:0.8rem; line-height:1.8; color:var(--muted); }
+
+  /* MANIFESTO */
+  .manifesto-section { padding:8rem 2.5rem; text-align:center; position:relative; overflow:hidden; }
+  .manifesto-section::before {
+    content:'畜'; position:absolute; font-family:'Kaisei Decol',serif;
+    font-size:40vw; color:rgba(26,26,24,0.03);
+    top:50%; left:50%; transform:translate(-50%,-50%);
+    pointer-events:none; line-height:1;
+  }
+  .manifesto-inner { max-width:680px; margin:0 auto; position:relative; z-index:1; }
+  .manifesto-quote { font-family:'Kaisei Decol',serif; font-size:clamp(1.5rem,3vw,2.5rem); line-height:1.7; margin-bottom:2rem; }
+  .manifesto-quote em { color:var(--accent); font-style:normal; }
+  .manifesto-sub { font-size:0.85rem; line-height:2; color:var(--muted); margin-bottom:3rem; }
+  .manifesto-ctas { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; }
+  .btn-primary { display:inline-flex; align-items:center; gap:0.5rem; padding:0.85rem 2rem; background:var(--ink); color:var(--bg); text-decoration:none; font-size:0.82rem; letter-spacing:0.1em; transition:background 0.2s,transform 0.15s; }
+  .btn-primary:hover { background:var(--accent); transform:translateY(-2px); }
+  .btn-secondary { display:inline-flex; align-items:center; gap:0.5rem; padding:0.85rem 2rem; border:1px solid var(--ink); color:var(--ink); text-decoration:none; font-size:0.82rem; letter-spacing:0.1em; transition:background 0.2s,color 0.2s; }
+  .btn-secondary:hover { background:var(--ink); color:var(--bg); }
+
+  /* FOOTER */
+  footer {
+    background:var(--ink); color:rgba(245,242,235,0.4);
+    padding:3rem 2.5rem;
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;
+  }
+  .footer-logo { font-family:'Kaisei Decol',serif; font-size:1rem; color:var(--bg); letter-spacing:0.15em; }
+  .footer-nav { display:flex; gap:1.5rem; list-style:none; }
+  .footer-nav a { font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.1em; color:rgba(245,242,235,0.4); text-decoration:none; transition:color 0.2s; }
+  .footer-nav a:hover { color:var(--accent); }
+  .footer-copy { font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.1em; width:100%; margin-top:0.5rem; }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+  @keyframes rotateSlow { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+  @keyframes ticker { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+  /* RESPONSIVE */
+  @media (max-width:900px) {
+    .hero { grid-template-columns:1fr; padding-top:7rem; }
+    .hero-right { display:none; }
+    .doctrine-grid { grid-template-columns:1fr; }
+    .pages-grid { grid-template-columns:1fr; }
+    .realms-list { grid-template-columns:repeat(3,1fr); }
+    .karma-section { grid-template-columns:1fr; gap:3rem; }
+    .ritual-cards { grid-template-columns:repeat(2,1fr); }
+  }
+  @media (max-width:600px) {
+    nav { padding:1rem 1.5rem; }
+    .nav-links { display:none; }
+    .section { padding:4rem 1.5rem; }
+    .realms-list { grid-template-columns:repeat(2,1fr); }
+    .ritual-cards { grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">チクショウドウ</a>
+  <ul class="nav-links">
+    <li><a href="index.html" class="active">TOP</a></li>
+    <li><a href="kyogi.html">教義</a></li>
+    <li><a href="gishiki.html">儀式</a></li>
+    <li><a href="kyoten.html">経典</a></li>
+    <li><a href="#join">参入する</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <p class="hero-eyebrow">// 畜生道 再解釈 宗教</p>
+    <h1 class="hero-title">人は己を<br><span>重くしすぎた。</span></h1>
+    <p class="hero-sub">
+      名前、意味、比較、自己実現。<br>
+      現代人は常に人格を維持し続ける。<br>
+      しかし生は、本来もっと軽い。<br>
+      貝のように、鳥のように、<br>循環へ還る道もまた、輪廻のひとつである。
+    </p>
+    <a href="kyogi.html" class="hero-cta">教義を読む →</a>
+  </div>
+  <div class="hero-right">
+    <div class="mandala">
+      <svg viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="200" cy="200" r="190" stroke="#1a1a18" stroke-width="0.5" stroke-dasharray="4 8"/>
+        <circle cx="200" cy="200" r="170" stroke="#c8602a" stroke-width="0.3" opacity="0.3"/>
+        <circle cx="200" cy="200" r="140" stroke="#1a1a18" stroke-width="0.5"/>
+        <g opacity="0.12">
+          <ellipse cx="200" cy="100" rx="18" ry="42" fill="#c8602a"/>
+          <ellipse cx="200" cy="100" rx="18" ry="42" fill="#c8602a" transform="rotate(60 200 200)"/>
+          <ellipse cx="200" cy="100" rx="18" ry="42" fill="#c8602a" transform="rotate(120 200 200)"/>
+          <ellipse cx="200" cy="100" rx="18" ry="42" fill="#c8602a" transform="rotate(180 200 200)"/>
+          <ellipse cx="200" cy="100" rx="18" ry="42" fill="#c8602a" transform="rotate(240 200 200)"/>
+          <ellipse cx="200" cy="100" rx="18" ry="42" fill="#c8602a" transform="rotate(300 200 200)"/>
+        </g>
+        <polygon points="200,80 320,260 80,260" stroke="#1a1a18" stroke-width="0.6" fill="none" opacity="0.2"/>
+        <polygon points="200,320 80,140 320,140" stroke="#c8602a" stroke-width="0.6" fill="none" opacity="0.2"/>
+        <circle cx="200" cy="60" r="3" fill="#c8602a" opacity="0.6"/>
+        <circle cx="200" cy="60" r="3" fill="#c8602a" opacity="0.6" transform="rotate(60 200 200)"/>
+        <circle cx="200" cy="60" r="3" fill="#c8602a" opacity="0.6" transform="rotate(120 200 200)"/>
+        <circle cx="200" cy="60" r="3" fill="#c8602a" opacity="0.6" transform="rotate(180 200 200)"/>
+        <circle cx="200" cy="60" r="3" fill="#c8602a" opacity="0.6" transform="rotate(240 200 200)"/>
+        <circle cx="200" cy="60" r="3" fill="#c8602a" opacity="0.6" transform="rotate(300 200 200)"/>
+        <circle cx="200" cy="200" r="60" stroke="#1a1a18" stroke-width="0.8" fill="rgba(245,242,235,0.9)"/>
+      </svg>
+      <div class="mandala-center">
+        <span class="mandala-kanji">畜</span>
+        <span class="mandala-sub">CHIKUSHODO</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker">
+    <span>無銘<span class="ticker-dot">◆</span></span>
+    <span>循環<span class="ticker-dot">◆</span></span>
+    <span>忘却<span class="ticker-dot">◆</span></span>
+    <span>身体性<span class="ticker-dot">◆</span></span>
+    <span>群れ感覚<span class="ticker-dot">◆</span></span>
+    <span>人格減圧<span class="ticker-dot">◆</span></span>
+    <span>還獣的徳<span class="ticker-dot">◆</span></span>
+    <span>反復生活<span class="ticker-dot">◆</span></span>
+    <span>季節性<span class="ticker-dot">◆</span></span>
+    <span>静かな奉仕<span class="ticker-dot">◆</span></span>
+    <span>無銘<span class="ticker-dot">◆</span></span>
+    <span>循環<span class="ticker-dot">◆</span></span>
+    <span>忘却<span class="ticker-dot">◆</span></span>
+    <span>身体性<span class="ticker-dot">◆</span></span>
+    <span>群れ感覚<span class="ticker-dot">◆</span></span>
+    <span>人格減圧<span class="ticker-dot">◆</span></span>
+    <span>還獣的徳<span class="ticker-dot">◆</span></span>
+    <span>反復生活<span class="ticker-dot">◆</span></span>
+    <span>季節性<span class="ticker-dot">◆</span></span>
+    <span>静かな奉仕<span class="ticker-dot">◆</span></span>
+  </div>
+</div>
+
+<!-- DOCTRINE OVERVIEW -->
+<section id="doctrine" class="section">
+  <p class="section-label">教義の核心</p>
+  <div class="doctrine-grid">
+    <div class="doctrine-card">
+      <p class="doctrine-num">01 — 根本苦</p>
+      <h3 class="doctrine-title">人格執着</h3>
+      <p class="doctrine-body">「自分という物語を固定・拡張・防衛し続けようとする衝動」。自己演出、比較、承認欲求——現代人は常に人格を濃縮し続けている。これが苦しみの源泉である。</p>
+    </div>
+    <div class="doctrine-card">
+      <p class="doctrine-num">02 — 救済</p>
+      <h3 class="doctrine-title">人格減圧</h3>
+      <p class="doctrine-body">人格を消滅させるのではない。「重すぎる人格」から少し降りること。比較から離れ、意味強迫を緩め、循環へ戻る。それがこの道の救済である。</p>
+    </div>
+    <div class="doctrine-card">
+      <p class="doctrine-num">03 — 目的地</p>
+      <h3 class="doctrine-title">還流</h3>
+      <p class="doctrine-body">畜生道は解脱できなかった敗北地点ではない。「自我負荷の軽い存在様式」への静かな還流先である。動物になることは、恐怖ではなく循環への帰郷である。</p>
+    </div>
+  </div>
+  <div style="text-align:center; margin-top:3rem;">
+    <a href="kyogi.html" class="btn-secondary">教義の全体を読む →</a>
+  </div>
+</section>
+
+<!-- PAGE LINKS -->
+<section class="pages-section">
+  <div class="pages-inner">
+    <p class="section-label">すべてのページ · All Pages</p>
+    <div class="pages-grid">
+      <a href="kyogi.html" class="page-card" data-bg="義">
+        <div>
+          <p class="pc-tag">// DOCTRINE · 教義</p>
+          <h2 class="pc-title">思想体系を<br>読む。</h2>
+        </div>
+        <p class="pc-desc">六道の再解釈、カルマ体系、倫理、死生観。チクショウドウの思想を体系的に解説する。</p>
+        <p class="pc-arrow">kyogi.html →</p>
+      </a>
+      <a href="gishiki.html" class="page-card" data-bg="式">
+        <div>
+          <p class="pc-tag">// RITUAL · 儀式</p>
+          <h2 class="pc-title">実践の<br>手引き。</h2>
+        </div>
+        <p class="pc-desc">換毛・回遊・群睡・脱名。人格を薄める四つの儀式と、還獣的な一日の過ごし方。</p>
+        <p class="pc-arrow">gishiki.html →</p>
+      </a>
+      <a href="kyoten.html" class="page-card" data-bg="典">
+        <div>
+          <p class="pc-tag">// SCRIPTURE · 経典</p>
+          <h2 class="pc-title">言葉に<br>触れる。</h2>
+        </div>
+        <p class="pc-desc">還獣訓、断章、用語集、聖典断片。思想の言語化された形を読む。</p>
+        <p class="pc-arrow">kyoten.html →</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- SIX REALMS -->
+<section id="realms" class="realms-section">
+  <div class="realms-inner">
+    <p class="section-label">六道の再解釈</p>
+    <h2 class="realms-title">優劣ではなく、<br>存在様式の違い。</h2>
+    <p class="realms-desc">既存仏教は六道に上下を見た。この思想は違う。どの道も異なる存在のあり方であり、畜生道は「循環の道」として肯定的に捉え直される。</p>
+    <div class="realms-list">
+      <div class="realm-item">
+        <span class="realm-kanji">天</span>
+        <span class="realm-name">天道</span>
+        <span class="realm-note">快楽・安楽</span>
+      </div>
+      <div class="realm-item">
+        <span class="realm-kanji">人</span>
+        <span class="realm-name">人間道</span>
+        <span class="realm-note">人格の道</span>
+      </div>
+      <div class="realm-item">
+        <span class="realm-kanji">修</span>
+        <span class="realm-name">修羅道</span>
+        <span class="realm-note">闘争・嫉妬</span>
+      </div>
+      <div class="realm-item highlight">
+        <span class="realm-kanji">畜</span>
+        <span class="realm-name">畜生道</span>
+        <span class="realm-note">循環の道</span>
+      </div>
+      <div class="realm-item">
+        <span class="realm-kanji">餓</span>
+        <span class="realm-name">餓鬼道</span>
+        <span class="realm-note">欠乏・欲望</span>
+      </div>
+      <div class="realm-item">
+        <span class="realm-kanji">獄</span>
+        <span class="realm-name">地獄道</span>
+        <span class="realm-note">苦痛</span>
+      </div>
+    </div>
+    <div style="text-align:center; margin-top:3rem;">
+      <a href="kyogi.html#realms" style="font-family:'DM Mono',monospace; font-size:0.72rem; letter-spacing:0.15em; color:var(--accent); text-decoration:none;">詳しく読む →</a>
+    </div>
+  </div>
+</section>
+
+<!-- KARMA -->
+<section id="karma" class="karma-section">
+  <div class="karma-left">
+    <p class="section-label" style="margin-bottom:1.5rem;">カルマ体系</p>
+    <h2>善悪ではなく、<br>どの存在様式へ<br>親和するか。</h2>
+    <p style="margin-top:1.5rem;">カルマとは罰でも褒美でもない。あなたがどの存在のあり方に引き寄せられているかを示すものである。重要なのは「責任放棄」ではなく、「人格肥大化の抑制」である。</p>
+  </div>
+  <div>
+    <div class="karma-table">
+      <div class="karma-row">
+        <div class="karma-cell">還獣的カルマ（善）</div>
+        <div class="karma-cell good">匿名性・反復・季節性・群れ感覚・身体性・忘却・静かな奉仕</div>
+      </div>
+      <div class="karma-row">
+        <div class="karma-cell">人間道カルマ（重）</div>
+        <div class="karma-cell bad">顕名・過剰自己演出・比較競争・自己神話化・永続化願望</div>
+      </div>
+      <div class="karma-row">
+        <div class="karma-cell">修羅道カルマ</div>
+        <div class="karma-cell">闘争・嫉妬・支配欲</div>
+      </div>
+      <div class="karma-row">
+        <div class="karma-cell">餓鬼道カルマ</div>
+        <div class="karma-cell">強欲・執着・欠乏感</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RITUALS -->
+<section id="rituals" class="rituals-section">
+  <div class="rituals-inner">
+    <p class="section-label">儀式</p>
+    <div class="ritual-cards">
+      <a href="gishiki.html#kanmou" class="ritual-card">
+        <span class="ritual-icon">🪶</span>
+        <h3 class="ritual-name">換毛</h3>
+        <p class="ritual-yomi">KANMOU</p>
+        <p class="ritual-desc">1日の終わりに、今日の自分という人格を静かに脱ぐ時間。名前を呼ばれない15分間。</p>
+      </a>
+      <a href="gishiki.html#kaiyu" class="ritual-card">
+        <span class="ritual-icon">🌊</span>
+        <h3 class="ritual-name">回遊</h3>
+        <p class="ritual-yomi">KAIYU</p>
+        <p class="ritual-desc">目的のない散歩。どこへ行くか決めない。ただ体が向かう方へ。</p>
+      </a>
+      <a href="gishiki.html#gunsui" class="ritual-card">
+        <span class="ritual-icon">🌙</span>
+        <h3 class="ritual-name">群睡</h3>
+        <p class="ritual-yomi">GUNSUI</p>
+        <p class="ritual-desc">同じ時間帯に、同じように眠る。非同期で、匿名で、群れとして。</p>
+      </a>
+      <a href="gishiki.html#datsumei" class="ritual-card">
+        <span class="ritual-icon">〇</span>
+        <h3 class="ritual-name">脱名</h3>
+        <p class="ritual-yomi">DATSUMEI</p>
+        <p class="ritual-desc">一定時間、名前を使わない。SNSを閉じ、肩書きを忘れ、ただ存在する。</p>
+      </a>
+    </div>
+    <div style="text-align:center; margin-top:3rem;">
+      <a href="gishiki.html" class="btn-secondary">儀式の手引きへ →</a>
+    </div>
+  </div>
+</section>
+
+<!-- MANIFESTO / JOIN -->
+<section id="join" class="manifesto-section">
+  <div class="manifesto-inner">
+    <p class="section-label" style="justify-content:center; margin-bottom:2.5rem;">コアメッセージ</p>
+    <blockquote class="manifesto-quote">
+      「人は己を<em>重くしすぎた。</em>」<br>
+      貝のように、鳥のように、<br>
+      循環へ還る道もまた、<br>
+      輪廻のひとつである。
+    </blockquote>
+    <p class="manifesto-sub">
+      熱狂は求めない。高額献金も求めない。<br>
+      ただ、人格を少し軽くしたい人へ。<br>
+      noteとXで、静かに発信していく。
+    </p>
+    <div class="manifesto-ctas">
+      <a href="https://note.com" class="btn-primary" target="_blank">note で読む →</a>
+      <a href="https://x.com" class="btn-secondary" target="_blank">X をフォローする</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span class="footer-logo">チクショウドウ</span>
+  <ul class="footer-nav">
+    <li><a href="index.html">TOP</a></li>
+    <li><a href="kyogi.html">教義</a></li>
+    <li><a href="gishiki.html">儀式</a></li>
+    <li><a href="kyoten.html">経典</a></li>
+  </ul>
+  <span class="footer-copy">// 無銘 · 循環 · 還流 · 忘却</span>
+</footer>
+
+</body>
+</html>
