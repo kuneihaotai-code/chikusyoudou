@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>参入する — 転生教</title>
+<link href="https://fonts.googleapis.com/css2?family=Kaisei+Decol:wght@400;700&family=Noto+Sans+JP:wght@300;400;500&family=DM+Mono:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5f2eb; --ink: #1a1a18; --muted: #6b6860;
+  --accent: #c8602a; --accent2: #4a7c6f; --light: #e8e4da; --paper: #faf8f3;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--ink); font-family: 'Noto Sans JP', sans-serif; font-weight: 300; overflow-x: hidden; }
+body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events:none; z-index:1000; opacity:0.4; }
+
+/* NAV */
+nav { position:fixed; top:0; left:0; right:0; z-index:100; padding:1.2rem 2.5rem; display:flex; justify-content:space-between; align-items:center; background:rgba(245,242,235,0.88); backdrop-filter:blur(14px); border-bottom:1px solid rgba(26,26,24,0.08); }
+.nav-logo { font-family:'Kaisei Decol',serif; font-size:1.1rem; letter-spacing:0.15em; color:var(--ink); text-decoration:none; }
+.nav-links { display:flex; gap:2rem; list-style:none; }
+.nav-links a { font-size:0.78rem; letter-spacing:0.1em; color:var(--muted); text-decoration:none; transition:color 0.2s; }
+.nav-links a:hover, .nav-links a.active { color:var(--accent); }
+
+/* HERO — FULL DARK */
+.sannyu-hero {
+  background: var(--ink);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 10rem 2.5rem 6rem;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+.sannyu-hero::before {
+  content: '転';
+  position: absolute;
+  font-family: 'Kaisei Decol', serif;
+  font-size: 60vw;
+  color: rgba(245,242,235,0.025);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  line-height: 1;
+  pointer-events: none;
+}
+.hero-inner { max-width: 760px; margin: 0 auto; position: relative; z-index: 1; }
+.hero-eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.25em;
+  color: var(--accent);
+  margin-bottom: 2rem;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.2s forwards;
+}
+.hero-title {
+  font-family: 'Kaisei Decol', serif;
+  font-size: clamp(2.8rem, 7vw, 5.5rem);
+  color: var(--bg);
+  line-height: 1.2;
+  margin-bottom: 1rem;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.4s forwards;
+}
+.hero-title em { color: var(--accent); font-style: normal; }
+.hero-catchcopy {
+  font-family: 'Kaisei Decol', serif;
+  font-size: clamp(1rem, 2vw, 1.4rem);
+  color: rgba(245,242,235,0.55);
+  margin-bottom: 3rem;
+  line-height: 1.8;
+  letter-spacing: 0.05em;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.6s forwards;
+}
+.hero-question {
+  font-family: 'Kaisei Decol', serif;
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  color: var(--bg);
+  margin-bottom: 3.5rem;
+  line-height: 1.6;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.8s forwards;
+}
+.hero-question em { color: var(--accent); font-style: normal; }
+.hero-scroll-hint {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
+  color: rgba(245,242,235,0.3);
+  opacity: 0;
+  animation: fadeIn 1s 1.4s forwards;
+}
+
+/* WHAT SECTION */
+.what-section {
+  padding: 8rem 2.5rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.section-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.25em;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 3rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.section-label::after { content:''; flex:1; height:1px; background:var(--accent); opacity:0.25; }
+
+.what-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6rem;
+  align-items: start;
+}
+.what-title {
+  font-family: 'Kaisei Decol', serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.3;
+  margin-bottom: 2rem;
+}
+.what-body {
+  font-size: 0.92rem;
+  line-height: 2.2;
+  color: var(--muted);
+}
+.what-body p { margin-bottom: 1.2rem; }
+.what-body p:last-child { margin-bottom: 0; }
+.what-body strong { color: var(--ink); font-weight: 500; }
+
+.what-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 2.5rem;
+}
+.tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  padding: 0.4rem 0.9rem;
+  border: 1px solid rgba(26,26,24,0.2);
+  color: var(--muted);
+}
+.tag.highlight {
+  background: var(--accent);
+  color: var(--bg);
+  border-color: var(--accent);
+}
+
+/* NOT-SECTION */
+.not-section {
+  background: var(--light);
+  padding: 7rem 2.5rem;
+}
+.not-inner { max-width: 1100px; margin: 0 auto; }
+.not-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5px;
+  background: rgba(26,26,24,0.1);
+  margin-top: 0;
+}
+.not-card {
+  background: var(--paper);
+  padding: 2.5rem 2rem;
+}
+.not-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem;
+  color: var(--accent);
+  letter-spacing: 0.2em;
+  margin-bottom: 1rem;
+}
+.not-title {
+  font-family: 'Kaisei Decol', serif;
+  font-size: 1.4rem;
+  margin-bottom: 0.8rem;
+}
+.not-body {
+  font-size: 0.83rem;
+  line-height: 1.9;
+  color: var(--muted);
+}
+
+/* ANTEATER / MASCOT SECTION */
+.anteater-section {
+  background: var(--ink);
+  padding: 8rem 2.5rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.anteater-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, rgba(200,96,42,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+.anteater-inner { max-width: 760px; margin: 0 auto; position: relative; z-index: 1; }
+.anteater-section .section-label { color: var(--accent); justify-content: center; }
+.anteater-section .section-label::after { display: none; }
+
+.anteater-kanji {
+  font-family: 'Kaisei Decol', serif;
+  font-size: clamp(5rem, 15vw, 12rem);
+  color: rgba(245,242,235,0.08);
+  line-height: 1;
+  margin-bottom: -2rem;
+  display: block;
+}
+.anteater-title {
+  font-family: 'Kaisei Decol', serif;
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  color: var(--bg);
+  margin-bottom: 1.5rem;
+  line-height: 1.4;
+}
+.anteater-title em { color: var(--accent); font-style: normal; }
+.anteater-body {
+  font-size: 0.9rem;
+  line-height: 2.1;
+  color: rgba(245,242,235,0.55);
+  margin-bottom: 1.5rem;
+}
+.anteater-note {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+  opacity: 0.7;
+}
+
+/* WHAT YOU DO */
+.howto-section {
+  padding: 8rem 2.5rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.howto-steps {
+  list-style: none;
+  counter-reset: step;
+  margin-top: 1rem;
+}
+.howto-step {
+  counter-increment: step;
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 3rem;
+  padding: 3rem 0;
+  border-bottom: 1px solid rgba(26,26,24,0.07);
+  align-items: start;
+}
+.howto-step:last-child { border-bottom: none; }
+.step-num {
+  font-family: 'Kaisei Decol', serif;
+  font-size: 3.5rem;
+  color: var(--accent);
+  opacity: 0.2;
+  line-height: 1;
+  text-align: right;
+}
+.step-content {}
+.step-title {
+  font-family: 'Kaisei Decol', serif;
+  font-size: 1.5rem;
+  margin-bottom: 0.6rem;
+}
+.step-body {
+  font-size: 0.88rem;
+  line-height: 2;
+  color: var(--muted);
+}
+
+/* REBIRTH QUESTION */
+.question-section {
+  background: var(--ink);
+  padding: 9rem 2.5rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.question-section::before {
+  content: '？';
+  position: absolute;
+  font-family: 'Kaisei Decol', serif;
+  font-size: 60vw;
+  color: rgba(245,242,235,0.02);
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  pointer-events: none;
+  line-height: 1;
+}
+.question-inner { max-width: 680px; margin: 0 auto; position: relative; z-index: 1; }
+.question-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.25em;
+  color: var(--accent);
+  margin-bottom: 2.5rem;
+}
+.question-main {
+  font-family: 'Kaisei Decol', serif;
+  font-size: clamp(2rem, 5vw, 4rem);
+  color: var(--bg);
+  line-height: 1.4;
+  margin-bottom: 1rem;
+}
+.question-main em { color: var(--accent); font-style: normal; }
+.question-sub {
+  font-size: 0.9rem;
+  line-height: 2;
+  color: rgba(245,242,235,0.45);
+  margin-bottom: 3.5rem;
+}
+
+/* ANSWER OPTIONS */
+.answer-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: rgba(245,242,235,0.06);
+  margin-bottom: 3.5rem;
+  text-align: left;
+}
+.answer-option {
+  background: var(--ink);
+  padding: 1.5rem 1.2rem;
+  transition: background 0.2s;
+  cursor: default;
+}
+.answer-option:hover { background: #222220; }
+.answer-animal {
+  font-family: 'Kaisei Decol', serif;
+  font-size: 1.6rem;
+  color: var(--bg);
+  display: block;
+  margin-bottom: 0.4rem;
+  line-height: 1;
+}
+.answer-name {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+  display: block;
+}
+.answer-note {
+  font-size: 0.75rem;
+  color: rgba(245,242,235,0.35);
+  margin-top: 0.5rem;
+  line-height: 1.6;
+}
+
+/* POLICY / NOT ASKING */
+.policy-section {
+  padding: 7rem 2.5rem;
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6rem;
+  align-items: start;
+}
+.policy-left h2 {
+  font-family: 'Kaisei Decol', serif;
+  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+  line-height: 1.3;
+  margin-bottom: 1.5rem;
+}
+.policy-left p {
+  font-size: 0.88rem;
+  line-height: 2.1;
+  color: var(--muted);
+}
+.policy-list { list-style: none; }
+.policy-item {
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(26,26,24,0.07);
+  display: flex;
+  gap: 1.2rem;
+  align-items: baseline;
+}
+.policy-item:last-child { border-bottom: none; }
+.policy-mark {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--accent2);
+  flex-shrink: 0;
+  letter-spacing: 0.1em;
+}
+.policy-mark.no { color: var(--accent); }
+.policy-text { font-size: 0.85rem; line-height: 1.8; color: var(--muted); }
+.policy-text strong { color: var(--ink); font-weight: 500; }
+
+/* CTA FINAL */
+.cta-section {
+  background: var(--accent);
+  padding: 8rem 2.5rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.cta-section::before {
+  content: '入';
+  position: absolute;
+  font-family: 'Kaisei Decol', serif;
+  font-size: 50vw;
+  color: rgba(26,26,24,0.07);
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  pointer-events: none;
+  line-height: 1;
+}
+.cta-inner { max-width: 680px; margin: 0 auto; position: relative; z-index: 1; }
+.cta-title {
+  font-family: 'Kaisei Decol', serif;
+  font-size: clamp(2.2rem, 5vw, 4rem);
+  color: var(--bg);
+  line-height: 1.3;
+  margin-bottom: 1.5rem;
+}
+.cta-body {
+  font-size: 0.9rem;
+  line-height: 2;
+  color: rgba(245,242,235,0.7);
+  margin-bottom: 3rem;
+}
+.cta-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+.btn-light {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.85rem 2rem;
+  background: var(--bg);
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 0.82rem;
+  letter-spacing: 0.1em;
+  transition: background 0.2s, transform 0.15s;
+}
+.btn-light:hover { background: var(--ink); color: var(--bg); transform: translateY(-2px); }
+.btn-outline-light {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.85rem 2rem;
+  border: 1px solid rgba(245,242,235,0.5);
+  color: var(--bg);
+  text-decoration: none;
+  font-size: 0.82rem;
+  letter-spacing: 0.1em;
+  transition: background 0.2s;
+}
+.btn-outline-light:hover { background: rgba(245,242,235,0.15); }
+
+/* FOOTER */
+footer {
+  background: var(--ink);
+  color: rgba(245,242,235,0.4);
+  padding: 3rem 2.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.footer-logo { font-family:'Kaisei Decol',serif; font-size:1rem; color:var(--bg); letter-spacing:0.15em; text-decoration: none; }
+.footer-nav { display:flex; gap:1.5rem; list-style:none; }
+.footer-nav a { font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.1em; color:rgba(245,242,235,0.4); text-decoration:none; transition:color 0.2s; }
+.footer-nav a:hover { color:var(--accent); }
+.footer-copy { font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.1em; width:100%; margin-top:0.5rem; }
+
+/* ANIMATIONS */
+@keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .what-grid { grid-template-columns: 1fr; gap: 3rem; }
+  .not-grid { grid-template-columns: 1fr; }
+  .answer-grid { grid-template-columns: repeat(2, 1fr); }
+  .policy-section { grid-template-columns: 1fr; gap: 3rem; }
+  .howto-step { grid-template-columns: 60px 1fr; gap: 2rem; }
+}
+@media (max-width: 600px) {
+  nav { padding:1rem 1.5rem; }
+  .nav-links { display:none; }
+  .answer-grid { grid-template-columns: repeat(2, 1fr); }
+  .howto-step { grid-template-columns: 1fr; }
+  .step-num { font-size: 2rem; text-align: left; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">転生教</a>
+  <ul class="nav-links">
+    <li><a href="index.html">TOP</a></li>
+    <li><a href="kyogi.html">教義</a></li>
+    <li><a href="gishiki.html">儀式</a></li>
+    <li><a href="kyoten.html">経典</a></li>
+    <li><a href="sannyu.html" class="active">参入する</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="sannyu-hero">
+  <div class="hero-inner">
+    <p class="hero-eyebrow">// JOIN · 転生教への参入</p>
+    <h1 class="hero-title">来世は<br><em>人間じゃなくて</em><br>もいい。</h1>
+    <p class="hero-catchcopy">転生教は、輪廻転生について<br>少し真面目に、少し冗談っぽく考えるための思想プロジェクト。</p>
+    <p class="hero-question">あなたは来世、<br><em>何になりたいですか？</em></p>
+    <p class="hero-scroll-hint">↓ SCROLL</p>
+  </div>
+</section>
+
+<!-- WHAT IS TENSHOKYO -->
+<section class="what-section">
+  <p class="section-label">転生教とは · What is Tenshokyo</p>
+  <div class="what-grid">
+    <div>
+      <h2 class="what-title">宗教を作る<br>過程そのものが、<br>このプロジェクト。</h2>
+    </div>
+    <div>
+      <div class="what-body">
+        <p>転生教は宗教法人でも新宗教でもない。<strong>思想サークルや思索コミュニティ</strong>に近い場所である。</p>
+        <p>仏教の輪廻転生をベースにしながらも、解脱や悟りを目指すことを前提にしない。畜生道を含む輪廻全体を再評価し、「<strong>人間だけが望ましい生き方なのか？</strong>」という問いを、参加者と一緒に育てていく。</p>
+        <p>映画で人間より犬の死に強く心を動かされる。熊の駆除ニュースで熊に感情移入する。そうした感覚の背景にある、<strong>人間中心主義への違和感</strong>を、ここでは正直に扱う。</p>
+        <p>完成した教義は提供しない。一緒に考えていく。</p>
+      </div>
+      <div class="what-tags">
+        <span class="tag highlight">輪廻転生</span>
+        <span class="tag highlight">来世想像</span>
+        <span class="tag">人格疲労</span>
+        <span class="tag">承認疲労</span>
+        <span class="tag">動物への共感</span>
+        <span class="tag highlight">匿名歓迎</span>
+        <span class="tag">ゆるい共同体</span>
+        <span class="tag">低熱量</span>
+        <span class="tag">ネット中心</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NOT A RELIGION SECTION -->
+<section class="not-section">
+  <div class="not-inner">
+    <p class="section-label">求めないもの · What We Don't Ask For</p>
+    <div class="not-grid">
+      <div class="not-card">
+        <p class="not-num">// 求めない 01</p>
+        <h3 class="not-title">熱狂と入信</h3>
+        <p class="not-body">集会で叫ぶことも、誓約書も、入信の儀式も、必要ない。「ちょっと気になる」くらいがちょうどいい。低温で静かに関わること。</p>
+      </div>
+      <div class="not-card">
+        <p class="not-num">// 求めない 02</p>
+        <h3 class="not-title">高額の献金</h3>
+        <p class="not-body">お金は求めない。noteを読む、Xをフォローする、それだけで十分参加している。経済的な負担は一切求めない。</p>
+      </div>
+      <div class="not-card">
+        <p class="not-num">// 求めない 03</p>
+        <h3 class="not-title">本名と実績</h3>
+        <p class="not-body">匿名歓迎。肩書きも不要。名前を残そうとしない「無銘」は、この思想の徳目のひとつである。あなたが何者かは、ここでは問わない。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MASCOT / ANTEATER -->
+<section class="anteater-section">
+  <div class="anteater-inner">
+    <p class="section-label">マスコット · Mascot</p>
+    <span class="anteater-kanji">蟻食</span>
+    <h2 class="anteater-title">オオアリクイに<br><em>転生しませんか？</em></h2>
+    <p class="anteater-body">
+      オオアリクイは転生教のマスコット的存在。<br>
+      長い鼻で土を掘り、アリを食べ、名前を持たず、SNSをしない。<br>
+      比較もしない。自己実現もしない。ただ、森の中に存在している。<br>
+      これは半分冗談であり、半分本気である。
+    </p>
+    <p class="anteater-note">// GIANT ANTEATER AS SPIRITUAL GUIDE</p>
+  </div>
+</section>
+
+<!-- HOW TO PARTICIPATE -->
+<section class="howto-section">
+  <p class="section-label">参入の仕方 · How to Join</p>
+  <ol class="howto-steps">
+    <li class="howto-step">
+      <div class="step-num">01</div>
+      <div class="step-content">
+        <h3 class="step-title">読む</h3>
+        <p class="step-body">noteを読む。このサイトの教義・儀式・経典ページを読む。「ちょっとわかる」と思ったなら、それだけで十分参加している。義務はない。</p>
+      </div>
+    </li>
+    <li class="howto-step">
+      <div class="step-num">02</div>
+      <div class="step-content">
+        <h3 class="step-title">考える</h3>
+        <p class="step-body">来世、自分は何になりたいか。動物に転生するとしたら何を選ぶか。その問いをぼんやりと持ち歩く。答えを出さなくていい。考え続けることが参加である。</p>
+      </div>
+    </li>
+    <li class="howto-step">
+      <div class="step-num">03</div>
+      <div class="step-content">
+        <h3 class="step-title">儀式を試す（任意）</h3>
+        <p class="step-body">換毛・回遊・群睡・脱名。四つの儀式のうち、気になるものを一つだけ試してみる。報告しなくていい。完璧にやらなくていい。やめてもいい。</p>
+      </div>
+    </li>
+    <li class="howto-step">
+      <div class="step-num">04</div>
+      <div class="step-content">
+        <h3 class="step-title">Xで静かに繋がる（任意）</h3>
+        <p class="step-body">XでXをフォローするか、「転生教」で検索する。バズらなくていい。届く人に届けばいい。感想は匿名でも、呟かなくても、どちらでもいい。</p>
+      </div>
+    </li>
+    <li class="howto-step">
+      <div class="step-num">05</div>
+      <div class="step-content">
+        <h3 class="step-title">教義の形成に関わる（任意）</h3>
+        <p class="step-body">この思想は未完成のまま公開されている。異議・補足・別の視点——全て歓迎する。教祖と信者の関係を作らない。参加者も教義形成に関われる場所を、少しずつ作っていく。</p>
+      </div>
+    </li>
+  </ol>
+</section>
+
+<!-- REBIRTH QUESTION -->
+<section class="question-section">
+  <div class="question-inner">
+    <p class="question-label">// THE CENTRAL QUESTION · 転生教の問い</p>
+    <h2 class="question-main">来世で<br><em>何になりたいか</em>、<br>考えたことはあるか。</h2>
+    <p class="question-sub">
+      正解はない。答えを出す必要もない。<br>
+      ただ、その問いを持ち歩くだけで、今の生が少し軽くなることがある。
+    </p>
+    <div class="answer-grid">
+      <div class="answer-option">
+        <span class="answer-animal">猫</span>
+        <span class="answer-name">CAT</span>
+        <p class="answer-note">昨日を引きずらない。比較しない。</p>
+      </div>
+      <div class="answer-option">
+        <span class="answer-animal">鳩</span>
+        <span class="answer-name">PIGEON</span>
+        <p class="answer-note">街に溶け込む。無名に生きる。</p>
+      </div>
+      <div class="answer-option">
+        <span class="answer-animal">貝</span>
+        <span class="answer-name">SHELLFISH</span>
+        <p class="answer-note">責任を持たず、ただ在る。</p>
+      </div>
+      <div class="answer-option">
+        <span class="answer-animal">蟻食</span>
+        <span class="answer-name">ANTEATER</span>
+        <p class="answer-note">マスコット。半分冗談、半分本気。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMMUNITY POLICY -->
+<section class="policy-section">
+  <div class="policy-left">
+    <p class="section-label" style="margin-bottom:1.5rem;">コミュニティ方針</p>
+    <h2>教祖と信者の<br>関係を、作らない。</h2>
+    <p style="margin-top:1.5rem;">転生教は、カリスマを生まないよう設計されている。参加者と運営の間に優劣はない。議論は歓迎される。教義は固定されない。</p>
+  </div>
+  <ul class="policy-list">
+    <li class="policy-item">
+      <span class="policy-mark">◎</span>
+      <span class="policy-text"><strong>教祖と信者の関係を作らない</strong> — 誰もが対等な思索者</span>
+    </li>
+    <li class="policy-item">
+      <span class="policy-mark">◎</span>
+      <span class="policy-text"><strong>参加者も教義形成に関わる</strong> — 未完成のまま公開する</span>
+    </li>
+    <li class="policy-item">
+      <span class="policy-mark">◎</span>
+      <span class="policy-text"><strong>議論歓迎</strong> — 反論・補足・異なる解釈を歓迎する</span>
+    </li>
+    <li class="policy-item">
+      <span class="policy-mark">◎</span>
+      <span class="policy-text"><strong>匿名歓迎</strong> — 名前を持ち込まなくてよい</span>
+    </li>
+    <li class="policy-item">
+      <span class="policy-mark">◎</span>
+      <span class="policy-text"><strong>低熱量</strong> — 熱狂しなくていい。いつでも離れられる</span>
+    </li>
+    <li class="policy-item">
+      <span class="policy-mark no">✕</span>
+      <span class="policy-text"><strong>高額の課金・献金を求めない</strong></span>
+    </li>
+    <li class="policy-item">
+      <span class="policy-mark no">✕</span>
+      <span class="policy-text"><strong>本名・実績の提出を求めない</strong></span>
+    </li>
+    <li class="policy-item">
+      <span class="policy-mark no">✕</span>
+      <span class="policy-text"><strong>活動報告・出席義務を設けない</strong></span>
+    </li>
+  </ul>
+</section>
+
+<!-- FINAL CTA -->
+<section class="cta-section">
+  <div class="cta-inner">
+    <h2 class="cta-title">来世は、<br>人間じゃなくても<br>いい。</h2>
+    <p class="cta-body">
+      読むだけでいい。考えるだけでいい。<br>
+      それが、この思想への参入である。<br>
+      合言葉は、ひとつだけ。
+    </p>
+    <div class="cta-buttons">
+      <a href="https://note.com/kyouso_tensyoko" class="btn-light" target="_blank">note で読む →</a>
+      <a href="https://x.com" class="btn-outline-light" target="_blank">X をフォローする</a>
+      <a href="kyogi.html" class="btn-outline-light">教義を読む</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <a href="index.html" class="footer-logo">転生教</a>
+  <ul class="footer-nav">
+    <li><a href="index.html">TOP</a></li>
+    <li><a href="kyogi.html">教義</a></li>
+    <li><a href="gishiki.html">儀式</a></li>
+    <li><a href="kyoten.html">経典</a></li>
+    <li><a href="sannyu.html">参入する</a></li>
+  </ul>
+  <span class="footer-copy">// 来世は人間じゃなくてもいい。 · 転生教</span>
+</footer>
+
+</body>
+</html>

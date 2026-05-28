@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>チクショウドウ — 人格を、少し軽くする。</title>
+<title>転生教 — 来世は人間じゃなくてもいい。</title>
 <link href="https://fonts.googleapis.com/css2?family=Kaisei+Decol:wght@400;700&family=Noto+Sans+JP:wght@300;400;500&family=DM+Mono:ital@0;1&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -125,7 +125,7 @@
   /* DOCTRINE */
   .section { padding:7rem 2.5rem; max-width:1100px; margin:0 auto; }
   .doctrine-grid {
-    display:grid; grid-template-columns:repeat(3,1fr);
+    display:grid; grid-template-columns:repeat(4,1fr);
     gap:1.5px; background:rgba(26,26,24,0.1);
   }
   .doctrine-card { background:var(--paper); padding:2.5rem 2rem; transition:background 0.2s; }
@@ -140,7 +140,7 @@
   .pages-section .section-label { color:var(--accent); }
   .pages-section .section-label::after { background:var(--accent); }
   .pages-grid {
-    display:grid; grid-template-columns:repeat(3,1fr);
+    display:grid; grid-template-columns:repeat(4,1fr);
     gap:1.5px; background:rgba(245,242,235,0.08);
   }
   .page-card {
@@ -218,7 +218,7 @@
   /* MANIFESTO */
   .manifesto-section { padding:8rem 2.5rem; text-align:center; position:relative; overflow:hidden; }
   .manifesto-section::before {
-    content:'畜'; position:absolute; font-family:'Kaisei Decol',serif;
+    content:'転'; position:absolute; font-family:'Kaisei Decol',serif;
     font-size:40vw; color:rgba(26,26,24,0.03);
     top:50%; left:50%; transform:translate(-50%,-50%);
     pointer-events:none; line-height:1;
@@ -239,7 +239,7 @@
     padding:3rem 2.5rem;
     display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;
   }
-  .footer-logo { font-family:'Kaisei Decol',serif; font-size:1rem; color:var(--bg); letter-spacing:0.15em; }
+  .footer-logo { text-decoration:none; font-family:'Kaisei Decol',serif; font-size:1rem; color:var(--bg); letter-spacing:0.15em; }
   .footer-nav { display:flex; gap:1.5rem; list-style:none; }
   .footer-nav a { font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.1em; color:rgba(245,242,235,0.4); text-decoration:none; transition:color 0.2s; }
   .footer-nav a:hover { color:var(--accent); }
@@ -273,26 +273,25 @@
 <body>
 
 <nav>
-  <a href="index.html" class="nav-logo">チクショウドウ</a>
+  <a href="index.html" class="nav-logo">転生教</a>
   <ul class="nav-links">
     <li><a href="index.html" class="active">TOP</a></li>
     <li><a href="kyogi.html">教義</a></li>
     <li><a href="gishiki.html">儀式</a></li>
     <li><a href="kyoten.html">経典</a></li>
-    <li><a href="#join">参入する</a></li>
+    <li><a href="sannyu.html">参入する</a></li>
   </ul>
 </nav>
 
 <!-- HERO -->
 <section class="hero">
   <div class="hero-left">
-    <p class="hero-eyebrow">// 畜生道 再解釈 宗教</p>
-    <h1 class="hero-title">人は己を<br><span>重くしすぎた。</span></h1>
+    <p class="hero-eyebrow">// 転生教 · TENSHOKYO</p>
+    <h1 class="hero-title">来世は<br><span>人間じゃなくて</span><br><span>もいい。</span></h1>
     <p class="hero-sub">
-      名前、意味、比較、自己実現。<br>
-      現代人は常に人格を維持し続ける。<br>
-      しかし生は、本来もっと軽い。<br>
-      貝のように、鳥のように、<br>循環へ還る道もまた、輪廻のひとつである。
+      輪廻転生について、少し真面目に、少し冗談っぽく考える思想プロジェクト。<br>
+      来世で動物になることを、恐怖ではなく帰郷として。<br>
+      解脱を目指さず、人格を少し軽くするための道。
     </p>
     <a href="kyogi.html" class="hero-cta">教義を読む →</a>
   </div>
@@ -321,8 +320,8 @@
         <circle cx="200" cy="200" r="60" stroke="#1a1a18" stroke-width="0.8" fill="rgba(245,242,235,0.9)"/>
       </svg>
       <div class="mandala-center">
-        <span class="mandala-kanji">畜</span>
-        <span class="mandala-sub">CHIKUSHODO</span>
+        <span class="mandala-kanji">転</span>
+        <span class="mandala-sub">TENSHOKYO</span>
       </div>
     </div>
   </div>
@@ -337,6 +336,8 @@
     <span>身体性<span class="ticker-dot">◆</span></span>
     <span>群れ感覚<span class="ticker-dot">◆</span></span>
     <span>人格減圧<span class="ticker-dot">◆</span></span>
+    <span>来世<span class="ticker-dot">◆</span></span>
+    <span>輪廻転生<span class="ticker-dot">◆</span></span>
     <span>還獣的徳<span class="ticker-dot">◆</span></span>
     <span>反復生活<span class="ticker-dot">◆</span></span>
     <span>季節性<span class="ticker-dot">◆</span></span>
@@ -347,6 +348,8 @@
     <span>身体性<span class="ticker-dot">◆</span></span>
     <span>群れ感覚<span class="ticker-dot">◆</span></span>
     <span>人格減圧<span class="ticker-dot">◆</span></span>
+    <span>来世<span class="ticker-dot">◆</span></span>
+    <span>輪廻転生<span class="ticker-dot">◆</span></span>
     <span>還獣的徳<span class="ticker-dot">◆</span></span>
     <span>反復生活<span class="ticker-dot">◆</span></span>
     <span>季節性<span class="ticker-dot">◆</span></span>
@@ -389,7 +392,7 @@
           <p class="pc-tag">// DOCTRINE · 教義</p>
           <h2 class="pc-title">思想体系を<br>読む。</h2>
         </div>
-        <p class="pc-desc">六道の再解釈、カルマ体系、倫理、死生観。チクショウドウの思想を体系的に解説する。</p>
+        <p class="pc-desc">六道の再解釈、カルマ体系、倫理、死生観。転生教の思想を体系的に解説する。</p>
         <p class="pc-arrow">kyogi.html →</p>
       </a>
       <a href="gishiki.html" class="page-card" data-bg="式">
@@ -399,6 +402,14 @@
         </div>
         <p class="pc-desc">換毛・回遊・群睡・脱名。人格を薄める四つの儀式と、還獣的な一日の過ごし方。</p>
         <p class="pc-arrow">gishiki.html →</p>
+      </a>
+      <a href="sannyu.html" class="page-card" data-bg="入">
+        <div>
+          <p class="pc-tag">// JOIN · 参入する</p>
+          <h2 class="pc-title">転生教に<br>参入する。</h2>
+        </div>
+        <p class="pc-desc">宗教法人でも新宗教でもない。来世について一緒に考える、ゆるい思索コミュニティ。匿名歓迎。低熱量。</p>
+        <p class="pc-arrow">sannyu.html →</p>
       </a>
       <a href="kyoten.html" class="page-card" data-bg="典">
         <div>
@@ -526,32 +537,32 @@
   <div class="manifesto-inner">
     <p class="section-label" style="justify-content:center; margin-bottom:2.5rem;">コアメッセージ</p>
     <blockquote class="manifesto-quote">
-      「人は己を<em>重くしすぎた。</em>」<br>
-      貝のように、鳥のように、<br>
-      循環へ還る道もまた、<br>
-      輪廻のひとつである。
+      来世で動物になることを、<em>恐怖ではなく帰郷として。</em><br>
+      あなたは来世、<br>
+      何になりたいですか？
     </blockquote>
     <p class="manifesto-sub">
-      熱狂は求めない。高額献金も求めない。<br>
-      ただ、人格を少し軽くしたい人へ。<br>
-      noteとXで、静かに発信していく。
+      教祖と信者の関係を作らない。匿名歓迎、低熱量。<br>
+      ただ来世について、一緒に考えたい人へ。<br>
+      参入は、静かに、いつでも。
     </p>
     <div class="manifesto-ctas">
-      <a href="https://note.com" class="btn-primary" target="_blank">note で読む →</a>
-      <a href="https://x.com" class="btn-secondary" target="_blank">X をフォローする</a>
+      <a href="sannyu.html" class="btn-primary">参入する →</a>
+      <a href="https://note.com" class="btn-secondary" target="_blank">note で読む</a>
     </div>
   </div>
 </section>
 
 <footer>
-  <span class="footer-logo">チクショウドウ</span>
+  <a href="index.html" class="footer-logo">転生教</a>
   <ul class="footer-nav">
     <li><a href="index.html">TOP</a></li>
     <li><a href="kyogi.html">教義</a></li>
     <li><a href="gishiki.html">儀式</a></li>
     <li><a href="kyoten.html">経典</a></li>
+    <li><a href="sannyu.html">参入する</a></li>
   </ul>
-  <span class="footer-copy">// 無銘 · 循環 · 還流 · 忘却</span>
+  <span class="footer-copy">// 来世は人間じゃなくてもいい。 · 転生教</span>
 </footer>
 
 </body>
