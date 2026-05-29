@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#f5f2eb"/>
+  <rect x="48" y="48" width="1104" height="534" fill="#faf8f3" stroke="#1a1a18" stroke-opacity="0.18" stroke-width="2"/>
+  <circle cx="960" cy="180" r="118" fill="#4a7c6f" fill-opacity="0.18"/>
+  <circle cx="1026" cy="246" r="82" fill="#c8602a" fill-opacity="0.18"/>
+  <text x="102" y="155" fill="#c8602a" font-family="serif" font-size="30" font-weight="700" letter-spacing="8">転生教</text>
+  <text x="102" y="285" fill="#1a1a18" font-family="serif" font-size="82" font-weight="700">来世は</text>
+  <text x="102" y="385" fill="#1a1a18" font-family="serif" font-size="82" font-weight="700">人間じゃなくてもいい。</text>
+  <line x1="102" y1="432" x2="668" y2="432" stroke="#c8602a" stroke-width="6" stroke-opacity="0.45"/>
+  <text x="102" y="500" fill="#6b6860" font-family="sans-serif" font-size="28" letter-spacing="3">人格を少し降り、循環へ戻るための仮設宗教。</text>
+  <text x="1020" y="500" fill="#1a1a18" font-family="serif" font-size="150" font-weight="700" text-anchor="middle" opacity="0.9">転</text>
+</svg>
