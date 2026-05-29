@@ -1,0 +1,1320 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>来世診断 — 転生教</title>
+<link href="https://fonts.googleapis.com/css2?family=Kaisei+Decol:wght@400;700&family=Noto+Sans+JP:wght@300;400;500&family=DM+Mono:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5f2eb;
+  --ink: #1a1a18;
+  --muted: #6b6860;
+  --accent: #c8602a;
+  --accent2: #4a7c6f;
+  --light: #e8e4da;
+  --paper: #faf8f3;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Noto Sans JP', sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* noise overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.35;
+}
+
+/* NAV */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  padding: 1.2rem 2.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(245,242,235,0.9);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(26,26,24,0.08);
+}
+.nav-logo {
+  font-family: 'Kaisei Decol', serif;
+  font-size: 1.1rem;
+  letter-spacing: 0.15em;
+  color: var(--ink);
+  text-decoration: none;
+}
+.nav-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+}
+
+/* ===== SCREENS ===== */
+.screen { display: none; min-height: 100vh; }
+.screen.active { display: flex; flex-direction: column; }
+
+/* ===== INTRO SCREEN ===== */
+#screen-intro {
+  background: var(--ink);
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 8rem 2rem 4rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.intro-bg-kanji {
+  position: absolute;
+  font-family: 'Kaisei Decol', serif;
+  font-size: 70vw;
+  color: rgba(245,242,235,0.025);
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  pointer-events: none;
+  line-height: 1;
+  animation: rotateSlow 120s linear infinite;
+}
+
+.intro-inner { max-width: 680px; margin: 0 auto; position: relative; z-index: 1; }
+
+.intro-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.3em;
+  color: var(--accent);
+  margin-bottom: 2.5rem;
+  opacity: 0;
+  animation: fadeUp 0.7s 0.2s forwards;
+}
+
+.intro-title {
+  font-family: 'Kaisei Decol', serif;
+  font-size: clamp(2.8rem, 8vw, 5.5rem);
+  color: var(--bg);
+  line-height: 1.2;
+  margin-bottom: 1rem;
+  opacity: 0;
+  animation: fadeUp 0.7s 0.4s forwards;
+}
+.intro-title em { color: var(--accent); font-style: normal; }
+
+.intro-catch {
+  font-family: 'Kaisei Decol', serif;
+  font-size: clamp(1rem, 2.5vw, 1.4rem);
+  color: rgba(245,242,235,0.45);
+  margin-bottom: 3rem;
+  line-height: 1.9;
+  opacity: 0;
+  animation: fadeUp 0.7s 0.6s forwards;
+}
+
+.intro-meta {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  margin-bottom: 3.5rem;
+  opacity: 0;
+  animation: fadeUp 0.7s 0.8s forwards;
+}
+.meta-item {
+  text-align: center;
+}
+.meta-num {
+  font-family: 'Kaisei Decol', serif;
+  font-size: 2.2rem;
+  color: var(--accent);
+  display: block;
+  line-height: 1;
+}
+.meta-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  color: rgba(245,242,235,0.3);
+  margin-top: 0.3rem;
+  display: block;
+}
+.meta-sep {
+  width: 1px;
+  background: rgba(245,242,235,0.08);
+  align-self: stretch;
+}
+
+.btn-start {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1rem 2.8rem;
+  background: var(--accent);
+  color: var(--bg);
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 0.9rem;
+  letter-spacing: 0.12em;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+  opacity: 0;
+  animation: fadeUp 0.7s 1s forwards;
+}
+.btn-start:hover { background: #a84e22; transform: translateY(-2px); }
+
+.intro-note {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  color: rgba(245,242,235,0.2);
+  margin-top: 1.5rem;
+  opacity: 0;
+  animation: fadeIn 1s 1.2s forwards;
+}
+
+/* ===== QUIZ SCREEN ===== */
+#screen-quiz {
+  padding-top: 5rem;
+  background: var(--bg);
+}
+
+.quiz-layout {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  min-height: calc(100vh - 5rem);
+}
+
+/* sidebar */
+.quiz-sidebar {
+  background: var(--ink);
+  padding: 3rem 2rem;
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 5rem;
+  height: calc(100vh - 5rem);
+  overflow: hidden;
+}
+
+.sidebar-title {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.25em;
+  color: rgba(245,242,235,0.25);
+  margin-bottom: 2rem;
+}
+
+.progress-bar-wrap {
+  height: 2px;
+  background: rgba(245,242,235,0.08);
+  margin-bottom: 2.5rem;
+  position: relative;
+}
+.progress-bar-fill {
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.4s ease;
+}
+
+.progress-steps {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.step-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.5rem 0;
+  opacity: 0.2;
+  transition: opacity 0.3s;
+}
+.step-indicator.done { opacity: 0.4; }
+.step-indicator.current { opacity: 1; }
+
+.step-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(245,242,235,0.2);
+  flex-shrink: 0;
+  transition: background 0.3s;
+}
+.step-indicator.done .step-dot { background: var(--accent2); }
+.step-indicator.current .step-dot { background: var(--accent); }
+
+.step-text {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.1em;
+  color: rgba(245,242,235,0.5);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.step-indicator.current .step-text { color: var(--bg); }
+
+.sidebar-animal-preview {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(245,242,235,0.06);
+}
+.preview-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.2em;
+  color: rgba(245,242,235,0.2);
+  margin-bottom: 0.8rem;
+}
+.preview-kanji {
+  font-family: 'Kaisei Decol', serif;
+  font-size: 3.5rem;
+  color: rgba(245,242,235,0.06);
+  line-height: 1;
+  transition: all 0.5s ease;
+}
+
+/* quiz main */
+.quiz-main {
+  padding: 4rem 5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: calc(100vh - 5rem);
+  position: relative;
+}
+
+.q-counter {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
+  color: var(--accent);
+  margin-bottom: 2.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.q-counter::after {
+  content: '';
+  flex: 0 0 60px;
+  height: 1px;
+  background: var(--accent);
+  opacity: 0.3;
+}
+
+.q-text {
+  font-family: 'Kaisei Decol', serif;
+  font-size: clamp(1.5rem, 3.5vw, 2.5rem);
+  line-height: 1.5;
+  margin-bottom: 3.5rem;
+  max-width: 600px;
+}
+
+.choices {
+  display: grid;
+  gap: 0.8rem;
+  max-width: 600px;
+}
+
+.choice-btn {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  padding: 1.2rem 1.5rem;
+  background: transparent;
+  border: 1px solid rgba(26,26,24,0.12);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.2s, background 0.2s, transform 0.15s;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+.choice-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+  z-index: 0;
+}
+.choice-btn:hover::before { transform: translateX(0); }
+.choice-btn:hover { border-color: var(--accent); color: var(--bg); }
+.choice-btn:hover .choice-alpha { color: rgba(245,242,235,0.4); }
+
+.choice-alpha {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+  transition: color 0.2s;
+}
+.choice-label {
+  font-size: 0.9rem;
+  line-height: 1.7;
+  position: relative;
+  z-index: 1;
+}
+
+.choice-btn.selected {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--bg);
+  transform: translateX(4px);
+}
+.choice-btn.selected .choice-alpha { color: var(--accent); }
+.choice-btn.selected::before { transform: translateX(-100%); }
+
+.quiz-nav {
+  display: flex;
+  gap: 1rem;
+  margin-top: 3rem;
+  align-items: center;
+}
+
+.btn-prev {
+  padding: 0.75rem 1.5rem;
+  background: transparent;
+  border: 1px solid rgba(26,26,24,0.15);
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+.btn-prev:hover { border-color: var(--ink); color: var(--ink); }
+.btn-prev:disabled { opacity: 0.2; cursor: default; }
+
+.btn-next {
+  padding: 0.75rem 2rem;
+  background: var(--ink);
+  border: none;
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  color: var(--bg);
+  cursor: pointer;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.btn-next:hover { background: var(--accent); }
+.btn-next:disabled { opacity: 0.3; cursor: default; }
+.btn-next:disabled:hover { background: var(--ink); }
+
+/* question transition */
+.quiz-main .q-content {
+  animation: fadeUp 0.35s ease forwards;
+}
+.quiz-main .q-content.exit {
+  animation: fadeOut 0.2s ease forwards;
+}
+
+/* ===== RESULT SCREEN ===== */
+#screen-result {
+  background: var(--ink);
+  justify-content: flex-start;
+  padding-top: 5rem;
+}
+
+.result-hero {
+  background: var(--ink);
+  padding: 5rem 2.5rem 4rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(245,242,235,0.06);
+}
+
+.result-bg-kanji {
+  position: absolute;
+  font-family: 'Kaisei Decol', serif;
+  font-size: 60vw;
+  color: rgba(245,242,235,0.025);
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  pointer-events: none;
+  line-height: 1;
+}
+
+.result-inner { max-width: 760px; margin: 0 auto; position: relative; z-index: 1; }
+
+.result-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.3em;
+  color: var(--accent);
+  margin-bottom: 1.5rem;
+  opacity: 0;
+  animation: fadeUp 0.6s 0.1s forwards;
+}
+
+.result-animal-kanji {
+  font-family: 'Kaisei Decol', serif;
+  font-size: clamp(5rem, 18vw, 12rem);
+  color: var(--bg);
+  line-height: 1;
+  margin-bottom: 0.5rem;
+  opacity: 0;
+  animation: fadeUp 0.6s 0.3s forwards;
+}
+
+.result-animal-name {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.4em;
+  color: var(--accent);
+  margin-bottom: 0.8rem;
+  opacity: 0;
+  animation: fadeUp 0.6s 0.5s forwards;
+}
+
+.result-animal-title {
+  font-family: 'Kaisei Decol', serif;
+  font-size: clamp(1.2rem, 3vw, 2rem);
+  color: rgba(245,242,235,0.6);
+  margin-bottom: 2rem;
+  opacity: 0;
+  animation: fadeUp 0.6s 0.6s forwards;
+}
+
+.result-body-section {
+  background: var(--paper);
+  padding: 5rem 2.5rem;
+}
+
+.result-body-inner {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.result-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  margin-bottom: 4rem;
+}
+
+.result-section-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.25em;
+  color: var(--accent);
+  margin-bottom: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+.result-section-label::after { content:''; flex:1; height:1px; background:var(--accent); opacity:0.2; }
+
+.result-desc {
+  font-size: 0.9rem;
+  line-height: 2.2;
+  color: var(--muted);
+}
+.result-desc strong { color: var(--ink); font-weight: 500; }
+
+.result-traits {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.trait-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.9rem 0;
+  border-bottom: 1px solid rgba(26,26,24,0.06);
+}
+.trait-item:last-child { border-bottom: none; }
+.trait-icon {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  color: var(--accent2);
+  flex-shrink: 0;
+  letter-spacing: 0.1em;
+}
+.trait-text { font-size: 0.85rem; line-height: 1.6; }
+
+.result-quote {
+  background: var(--light);
+  border-left: 2px solid var(--accent);
+  padding: 2rem 2.5rem;
+  margin: 2rem 0 0;
+  font-family: 'Kaisei Decol', serif;
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: var(--ink);
+}
+
+.result-also {
+  margin-top: 4rem;
+  padding-top: 3rem;
+  border-top: 1px solid rgba(26,26,24,0.08);
+}
+
+.result-also-title {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
+  color: var(--muted);
+  margin-bottom: 1.5rem;
+}
+
+.also-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: rgba(26,26,24,0.08);
+}
+.also-card {
+  background: var(--paper);
+  padding: 1.2rem;
+  text-align: center;
+}
+.also-kanji {
+  font-family: 'Kaisei Decol', serif;
+  font-size: 2rem;
+  display: block;
+  margin-bottom: 0.3rem;
+}
+.also-name {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.15em;
+  color: var(--muted);
+}
+
+.result-cta {
+  background: var(--ink);
+  padding: 5rem 2.5rem;
+  text-align: center;
+  border-top: 2px solid var(--accent);
+}
+
+.result-cta-inner { max-width: 600px; margin: 0 auto; }
+
+.result-cta-title {
+  font-family: 'Kaisei Decol', serif;
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  color: var(--bg);
+  margin-bottom: 1rem;
+  line-height: 1.4;
+}
+
+.result-cta-sub {
+  font-size: 0.85rem;
+  color: rgba(245,242,235,0.4);
+  margin-bottom: 2.5rem;
+  line-height: 1.9;
+}
+
+.cta-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-retry {
+  padding: 0.85rem 2rem;
+  background: var(--accent);
+  color: var(--bg);
+  border: none;
+  font-size: 0.82rem;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+  font-family: 'Noto Sans JP', sans-serif;
+}
+.btn-retry:hover { background: #a84e22; transform: translateY(-2px); }
+
+.btn-link-out {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.85rem 2rem;
+  border: 1px solid rgba(245,242,235,0.2);
+  color: rgba(245,242,235,0.6);
+  text-decoration: none;
+  font-size: 0.82rem;
+  letter-spacing: 0.1em;
+  transition: border-color 0.2s, color 0.2s;
+}
+.btn-link-out:hover { border-color: var(--bg); color: var(--bg); }
+
+/* ANIMATIONS */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes fadeOut {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-10px); }
+}
+@keyframes rotateSlow {
+  from { transform: translate(-50%,-50%) rotate(0deg); }
+  to { transform: translate(-50%,-50%) rotate(360deg); }
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .quiz-layout { grid-template-columns: 1fr; }
+  .quiz-sidebar { display: none; }
+  .quiz-main { padding: 3rem 2rem; }
+  .result-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+  .also-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 600px) {
+  nav { padding: 1rem 1.5rem; }
+  .quiz-main { padding: 2.5rem 1.5rem; }
+  .cta-buttons { flex-direction: column; align-items: center; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">転生教</a>
+  <span class="nav-sub">来世診断</span>
+</nav>
+
+<!-- SCREEN: INTRO -->
+<section class="screen active" id="screen-intro">
+  <div class="intro-bg-kanji">転</div>
+  <div class="intro-inner">
+    <p class="intro-label">// SHINDAN · 来世動物診断</p>
+    <h1 class="intro-title">来世は<br><em>何の動物</em>か。</h1>
+    <p class="intro-catch">
+      あなたの感覚・価値観・生き方から、<br>
+      来世でもっとも相性のよい動物を診断する。<br>
+      16の選択肢。答えに正誤はない。
+    </p>
+    <div class="intro-meta">
+      <div class="meta-item">
+        <span class="meta-num">16</span>
+        <span class="meta-label">QUESTIONS</span>
+      </div>
+      <div class="meta-sep"></div>
+      <div class="meta-item">
+        <span class="meta-num">16</span>
+        <span class="meta-label">ANIMALS</span>
+      </div>
+      <div class="meta-sep"></div>
+      <div class="meta-item">
+        <span class="meta-num">5</span>
+        <span class="meta-label">MIN</span>
+      </div>
+    </div>
+    <button class="btn-start" onclick="startQuiz()">診断を始める →</button>
+    <p class="intro-note">// 匿名 · データ収集なし · いつでも離脱可</p>
+  </div>
+</section>
+
+<!-- SCREEN: QUIZ -->
+<section class="screen" id="screen-quiz">
+  <div class="quiz-layout">
+    <aside class="quiz-sidebar">
+      <p class="sidebar-title">// PROGRESS</p>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+      </div>
+      <div class="progress-steps" id="progress-steps"></div>
+      <div class="sidebar-animal-preview">
+        <p class="preview-label">// LEADING ANIMAL</p>
+        <div class="preview-kanji" id="preview-kanji">—</div>
+      </div>
+    </aside>
+
+    <main class="quiz-main">
+      <div class="q-content" id="q-content">
+        <p class="q-counter" id="q-counter">Q01 / 16</p>
+        <p class="q-text" id="q-text"></p>
+        <div class="choices" id="choices"></div>
+        <div class="quiz-nav">
+          <button class="btn-prev" id="btn-prev" onclick="prevQuestion()" disabled>← 戻る</button>
+          <button class="btn-next" id="btn-next" onclick="nextQuestion()" disabled>次へ →</button>
+        </div>
+      </div>
+    </main>
+  </div>
+</section>
+
+<!-- SCREEN: RESULT -->
+<section class="screen" id="screen-result">
+  <div class="result-hero">
+    <div class="result-bg-kanji" id="result-bg-kanji"></div>
+    <div class="result-inner">
+      <p class="result-label" id="result-label">// あなたの来世</p>
+      <div class="result-animal-kanji" id="result-kanji"></div>
+      <p class="result-animal-name" id="result-roman"></p>
+      <p class="result-animal-title" id="result-title"></p>
+    </div>
+  </div>
+
+  <div class="result-body-section">
+    <div class="result-body-inner">
+      <div class="result-grid">
+        <div>
+          <p class="result-section-label">来世の姿</p>
+          <p class="result-desc" id="result-desc"></p>
+          <blockquote class="result-quote" id="result-quote"></blockquote>
+        </div>
+        <div>
+          <p class="result-section-label">この動物の徳目</p>
+          <div class="result-traits" id="result-traits"></div>
+        </div>
+      </div>
+
+      <div class="result-also">
+        <p class="result-also-title">// 相性の近い動物</p>
+        <div class="also-grid" id="result-also"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="result-cta">
+    <div class="result-cta-inner">
+      <h2 class="result-cta-title">来世は、<br>人間じゃなくてもいい。</h2>
+      <p class="result-cta-sub">この結果は教義ではない。ひとつの問いとして、<br>持ち帰ってほしい。</p>
+      <div class="cta-buttons">
+        <button class="btn-retry" onclick="retry()">もう一度診断する</button>
+        <a href="sannyu.html" class="btn-link-out">転生教に参入する</a>
+        <a href="kyogi.html" class="btn-link-out">教義を読む</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+// =====================================================
+//  DATA
+// =====================================================
+
+const ANIMALS = [
+  {
+    id: 'cat',
+    kanji: '猫', roman: 'CAT', title: '無関心という自由の体現者',
+    desc: '猫に転生するあなたは、<strong>他者の評価を必要としない</strong>存在になる。昨日を引きずらず、明日を心配せず、今この瞬間だけに生きる。比較社会から完全に降りた、純粋な現在形の生き物。',
+    quote: '昨日のことを猫は覚えていない。それは欠如ではなく、恩寵である。',
+    traits: ['承認を必要としない', '比較から自由', '自分のペースで生きる', '親密さを選ぶ', '孤独を怖れない'],
+    axes: { solitary: 2, wild: 1, slow: 1, silent: 2, free: 2 },
+    also: ['fox', 'owl', 'octopus']
+  },
+  {
+    id: 'anteater',
+    kanji: '蟻食', roman: 'GIANT ANTEATER', title: '転生教のマスコット・無欲の巡礼者',
+    desc: '長い鼻で土を掘り、アリを食べ、<strong>名前を持たず</strong>、SNSをしない。比較もしない。自己実現もしない。ただ、森の中に存在している。転生教が最初に思い描いた来世の姿。これは半分冗談であり、半分本気である。',
+    quote: 'オオアリクイはランキングに入らない。だからこそ、美しい。',
+    traits: ['目的を持たない徘徊', '名声への無関心', '静かな存在感', '独特すぎる外見', '誰にも似ていない'],
+    axes: { solitary: 2, wild: 2, slow: 2, silent: 2, free: 1 },
+    also: ['sloth', 'capybara', 'turtle']
+  },
+  {
+    id: 'crow',
+    kanji: '烏', roman: 'CROW', title: '都市に溶け込む知性の観察者',
+    desc: '烏に転生するあなたは、<strong>賢く、したたかに</strong>生きる。人間社会を外側から観察し、そのルールを利用しながらも従属しない。群れを知り、個を保つ。都市という環境を最も巧みに渡る存在。',
+    quote: '烏は人間を観察している。人間は自分が観察されているとは思っていない。',
+    traits: ['高い知性と記憶力', '集団と個の両立', '道具を使う創造性', '適応能力の高さ', '人間社会への批評眼'],
+    axes: { solitary: 0, wild: 0, slow: 0, silent: 0, free: 1 },
+    also: ['fox', 'cat', 'dolphin']
+  },
+  {
+    id: 'sloth',
+    kanji: '樹懶', roman: 'SLOTH', title: '速度の外に生きる者',
+    desc: '樹懶に転生するあなたは、<strong>効率という概念を持たない</strong>。1日のほとんどを木にぶら下がり、ゆっくりと葉を食べる。生産性を問われない存在として、現代の価値観から最も遠い場所に生きる。',
+    quote: '急がないことは、欠点ではない。ただ別の速度があるだけだ。',
+    traits: ['効率への無関心', 'ゆっくりとした代謝', '省エネルギーな生き方', '外敵への迷彩（動かないこと）', '木の上という聖域'],
+    axes: { solitary: 1, wild: 1, slow: 3, silent: 2, free: 1 },
+    also: ['anteater', 'turtle', 'capybara']
+  },
+  {
+    id: 'dolphin',
+    kanji: '海豚', roman: 'DOLPHIN', title: '共鳴する知性、水の哲学者',
+    desc: '海豚に転生するあなたは、<strong>深いコミュニケーション</strong>を持ちながら、自由に海を泳ぐ。集団の中で個を失わず、遊びを知り、言語に似た何かで他者と繋がる。知性と自由が両立する希少な存在。',
+    quote: '海豚は遊ぶために泳ぐのではない。泳ぐことそのものが遊びなのだ。',
+    traits: ['深い共感力', '遊びを本能とする', '自分の言語を持つ', '集団と自己の調和', '海という広大な自由'],
+    axes: { solitary: 0, wild: 1, slow: 0, silent: 0, free: 2 },
+    also: ['crow', 'wolf', 'parrot']
+  },
+  {
+    id: 'owl',
+    kanji: '梟', roman: 'OWL', title: '夜の思索者、沈黙の観察者',
+    desc: '梟に転生するあなたは、<strong>昼間の喧騒を静かに避け</strong>、夜に目覚める。言葉少なく、しかし鋭く世界を見通す。孤独を厭わず、ひとりの静寂の中に自分の宇宙を持つ。',
+    quote: '梟は何も語らない。しかしすべてを見ている。',
+    traits: ['夜型の感性', '沈黙を好む', '観察と洞察', '単独行動', '回転する視野—多角的な視点'],
+    axes: { solitary: 2, wild: 1, slow: 1, silent: 3, free: 1 },
+    also: ['cat', 'fox', 'crow']
+  },
+  {
+    id: 'wolf',
+    kanji: '狼', roman: 'WOLF', title: '誠実な群れの哲学者',
+    desc: '狼に転生するあなたは、<strong>信頼できる少数とだけ</strong>深く繋がる。群れの秩序を大切にしながら、個としての誇りも失わない。遠吠えは主張ではなく、確認である。「ここにいる」という静かな宣言。',
+    quote: '狼は吠えて自慢しない。吠えて、繋がろうとするのだ。',
+    traits: ['少数との深い信頼', '集団の中の役割意識', '誠実さとプライド', '縄張りと帰属感', '遠吠えという詩'],
+    axes: { solitary: 0, wild: 2, slow: 0, silent: 1, free: 1 },
+    also: ['dolphin', 'crow', 'elephant']
+  },
+  {
+    id: 'turtle',
+    kanji: '亀', roman: 'TURTLE', title: '時間の外に生きる長者',
+    desc: '亀に転生するあなたは、<strong>人間的な時間感覚から完全に解放</strong>される。100年以上の生を、急がずゆっくりと生きる。甲羅は防御ではなく、自分の世界そのものだ。',
+    quote: '亀は焦らない。焦る必要がないのではなく、焦るという感覚がないのだ。',
+    traits: ['時間への達観', '長期的な視野', '自分の中に籠る力', '頑健さと忍耐', '長寿という別の時間軸'],
+    axes: { solitary: 1, wild: 0, slow: 3, silent: 2, free: 0 },
+    also: ['sloth', 'anteater', 'capybara']
+  },
+  {
+    id: 'fox',
+    kanji: '狐', roman: 'FOX', title: '境界に生きる知恵者',
+    desc: '狐に転生するあなたは、<strong>人間と野生の境界線</strong>を生きる。どちらにも属さず、どちらの言葉もわかる。適応力と知性を持ちながら、最終的には自分の森へと帰る。捉えられない自由。',
+    quote: '狐は人里に近づく。しかし飼われることはない。',
+    traits: ['どこにも属さない自由', '高い適応力と知恵', '境界線の住人', '神話的な存在感', '人の言葉を知る野生'],
+    axes: { solitary: 2, wild: 2, slow: 0, silent: 1, free: 2 },
+    also: ['crow', 'cat', 'owl']
+  },
+  {
+    id: 'elephant',
+    kanji: '象', roman: 'ELEPHANT', title: '記憶を抱えて歩む巡礼者',
+    desc: '象に転生するあなたは、<strong>すべてを覚えている</strong>。仲間の死を悼み、年老いた者を助け、数十年前の水場を覚えて戻る。感情の深さと記憶の豊かさを持つ、陸上最大の哲学者。',
+    quote: '象は忘れない。それは呪いではなく、愛の別名だ。',
+    traits: ['深い記憶と情感', '共同体への献身', '悼む能力', '長い旅と帰還', '巨体という静けさ'],
+    axes: { solitary: 0, wild: 1, slow: 1, silent: 1, free: 0 },
+    also: ['wolf', 'dolphin', 'whale']
+  },
+  {
+    id: 'capybara',
+    kanji: '水豚', roman: 'CAPYBARA', title: '万物と共存する平和の体現者',
+    desc: '水豚に転生するあなたは、<strong>敵を作らない</strong>。鳥が体に乗り、ワニが隣で眠り、あらゆる動物が自然と傍に集まる。競争から降り、ただ存在することで、周囲に安らぎをもたらす。',
+    quote: '水豚は何もしていない。ただそこにいるだけで、場が和む。',
+    traits: ['圧倒的な温和さ', '争いを知らない', '全種との共存能力', '存在するだけで場を作る', '水辺という聖域'],
+    axes: { solitary: 0, wild: 0, slow: 2, silent: 1, free: 0 },
+    also: ['turtle', 'elephant', 'sloth']
+  },
+  {
+    id: 'whale',
+    kanji: '鯨', roman: 'WHALE', title: '深海の独唱者',
+    desc: '鯨に転生するあなたは、<strong>誰にも届かない歌を歌い続ける</strong>。52Hzの鯨のように、固有の周波数で鳴く孤独な存在かもしれない。しかしその歌は確かに海に満ちている。深さを知る者の孤独。',
+    quote: 'その声は届かないかもしれない。それでも歌い続ける——それが鯨の祈りだ。',
+    traits: ['深海という内面', '孤独な歌', '巨大さと繊細さ', '固有の周波数', '理解されなくても続ける力'],
+    axes: { solitary: 2, wild: 1, slow: 1, silent: 0, free: 2 },
+    also: ['owl', 'elephant', 'wolf']
+  },
+  {
+    id: 'octopus',
+    kanji: '章魚', roman: 'OCTOPUS', title: '九つの脳を持つ変容者',
+    desc: '章魚に転生するあなたは、<strong>固定した形を持たない</strong>。体の色も形も変え、8本の腕はそれぞれが独立して考え、瓶の蓋を開け、夢を見る。既存のカテゴリには収まらない、生命の異端。',
+    quote: '章魚に骨はない。だから、あらゆる形に変わることができる。',
+    traits: ['カテゴリへの収まらなさ', '変容する表現力', '分散した知性', '問題解決の独創性', '短命という強度'],
+    axes: { solitary: 1, wild: 1, slow: 0, silent: 1, free: 2 },
+    also: ['crow', 'fox', 'cat']
+  },
+  {
+    id: 'parrot',
+    kanji: '鸚鵡', roman: 'PARROT', title: '人語を話す越境者',
+    desc: '鸚鵡に転生するあなたは、<strong>言語という武器</strong>を鳥として手に入れる。人間の言葉を語りながら、空を飛ぶ。どちらの世界にも完全には属さない、ユニークな境界の存在。色彩も声も豊かに、存在を主張する。',
+    quote: '鸚鵡の言葉は借り物かもしれない。しかし羽は本物だ。',
+    traits: ['言語と飛行の両立', '鮮やかな自己表現', '記憶と模倣の知性', '社会性と群れ意識', '人間への親和性'],
+    axes: { solitary: 0, wild: 0, slow: 0, silent: 0, free: 1 },
+    also: ['crow', 'dolphin', 'fox']
+  },
+  {
+    id: 'bear',
+    kanji: '熊', roman: 'BEAR', title: '冬眠する求道者',
+    desc: '熊に転生するあなたは、<strong>必要なときだけ動き</strong>、冬になれば深く眠る。社会の速度に合わせない。圧倒的な力を持ちながら、ほとんどの場合、静かに山に暮らす。干渉されなければ争わない。',
+    quote: '熊は強い。だから急がない。',
+    traits: ['冬眠という内省の季節', '必要最低限の社交', '圧倒的な個の力', '山という帰郷', '人間社会への違和感'],
+    axes: { solitary: 2, wild: 2, slow: 1, silent: 1, free: 1 },
+    also: ['wolf', 'fox', 'owl']
+  },
+  {
+    id: 'pigeon',
+    kanji: '鳩', roman: 'PIGEON', title: '都市の無名の生者',
+    desc: '鳩に転生するあなたは、<strong>完全な無名</strong>として都市を生きる。誰も名前を知らず、誰も気にしない。しかし確かに存在し、帰巣本能で自分の場所へ帰る。人間の喧騒を、全く気にせず歩く。',
+    quote: '鳩は無名だ。それは失敗ではなく、完全なる自由の形だ。',
+    traits: ['完全な無名', '都市という生息地', '帰巣本能という根', '人間への無関心', '存在するだけで十分'],
+    axes: { solitary: 1, wild: 0, slow: 1, silent: 1, free: 1 },
+    also: ['cat', 'capybara', 'turtle']
+  }
+];
+
+const QUESTIONS = [
+  {
+    text: '休日の理想的な過ごし方に近いのはどちらか。',
+    choices: [
+      { text: 'ひとりで静かな場所にいる。特に何もしなくていい。', axes: { solitary: 1, silent: 1 } },
+      { text: '信頼できる数人と、ゆっくり話す。', axes: { solitary: 0, silent: 0 } },
+      { text: '自然の中を、あてもなく歩く。', axes: { wild: 1, free: 1 } },
+      { text: '読書か、ぼんやりすることに費やす。', axes: { slow: 1, silent: 1 } }
+    ]
+  },
+  {
+    text: '人間関係について最も共感するのはどれか。',
+    choices: [
+      { text: '深く繋がれる人間は少なくていい。', axes: { solitary: 1 } },
+      { text: '広く浅くが心地よい。', axes: { solitary: -1 } },
+      { text: '群れより、ひとりで完結したい。', axes: { solitary: 2 } },
+      { text: '仲間の存在が、生きる理由になっている。', axes: { solitary: -1, free: -1 } }
+    ]
+  },
+  {
+    text: '自分のペースについて、どう感じるか。',
+    choices: [
+      { text: '世間より明らかに遅い。それでいいと思っている。', axes: { slow: 2 } },
+      { text: 'ゆっくりだが、確実に進みたい。', axes: { slow: 1 } },
+      { text: '状況に合わせて変えられる。', axes: { slow: 0 } },
+      { text: '速く動くことが好きだ。', axes: { slow: -1, free: 1 } }
+    ]
+  },
+  {
+    text: '言葉に対して、どんなスタンスをとるか。',
+    choices: [
+      { text: '多くを語らず、伝わるかどうかより、黙っていたい。', axes: { silent: 2 } },
+      { text: '言葉は大切だが、沈黙の方が好きなことも多い。', axes: { silent: 1 } },
+      { text: '言語化することで、自分が整理される。', axes: { silent: -1 } },
+      { text: 'コミュニケーションが生きる喜びのひとつだ。', axes: { silent: -2 } }
+    ]
+  },
+  {
+    text: '自分の「本来いる場所」に近いのはどこか。',
+    choices: [
+      { text: '人のいない自然の中。', axes: { wild: 2, free: 1 } },
+      { text: '都市の片隅、誰も知らない場所。', axes: { wild: 0, solitary: 1 } },
+      { text: '信頼できる人がいる、小さな場所。', axes: { wild: -1, solitary: 0 } },
+      { text: '移動し続けること自体が、場所だ。', axes: { free: 2, wild: 1 } }
+    ]
+  },
+  {
+    text: '「承認」について、最も近い感覚はどれか。',
+    choices: [
+      { text: 'ほぼ必要ない。評価より自分の感覚を信じる。', axes: { solitary: 1, free: 1 } },
+      { text: '少数の人に認められれば十分。', axes: { solitary: 0 } },
+      { text: '承認は嬉しいが、依存したくない。', axes: { solitary: 0, free: 0 } },
+      { text: '認められることで力が出る。', axes: { solitary: -1, free: -1 } }
+    ]
+  },
+  {
+    text: '眠ることについて、どう感じているか。',
+    choices: [
+      { text: '眠りは最高の時間。できれば長く眠りたい。', axes: { slow: 2, silent: 1 } },
+      { text: '眠りに落ちる瞬間が、一番自由だ。', axes: { free: 1, slow: 1 } },
+      { text: '必要な分だけ眠れればいい。', axes: { slow: 0 } },
+      { text: '眠るのが少しもったいない感覚がある。', axes: { slow: -1 } }
+    ]
+  },
+  {
+    text: '「名前を持つこと」について、どう思うか。',
+    choices: [
+      { text: '名前は重荷だ。匿名で生きたい。', axes: { solitary: 1, silent: 1, free: 1 } },
+      { text: 'ペンネームや別名を使うのが心地よい。', axes: { solitary: 0, free: 1 } },
+      { text: '名前は自分の一部。誇りに思っている。', axes: { solitary: -1 } },
+      { text: '名前より行動で覚えられたい。', axes: { free: 0 } }
+    ]
+  },
+  {
+    text: '動物に転生するとしたら、どんな生き方がしたいか。',
+    choices: [
+      { text: '誰にも干渉されず、ひとりで森に生きたい。', axes: { solitary: 2, wild: 2 } },
+      { text: '小さな群れの中で、静かに生きたい。', axes: { solitary: 0, wild: 1 } },
+      { text: '人間の近くで、自由に動きたい。', axes: { wild: 0, free: 1 } },
+      { text: '海か空を、制限なく動き続けたい。', axes: { free: 2, wild: 1 } }
+    ]
+  },
+  {
+    text: '人間社会に感じる違和感として近いのはどれか。',
+    choices: [
+      { text: '比較と競争が、絶えない。', axes: { solitary: 1, free: 1 } },
+      { text: '人格を維持し続けることに、疲れる。', axes: { slow: 1, silent: 1 } },
+      { text: '速く動くことが、善とされすぎている。', axes: { slow: 2 } },
+      { text: '本名・肩書・実績で人を測りすぎる。', axes: { solitary: 1, free: 1 } }
+    ]
+  },
+  {
+    text: '映画やドキュメンタリーで感情移入しやすいのはどれか。',
+    choices: [
+      { text: '動物。人間キャラより強く動かされる。', axes: { wild: 2, free: 1 } },
+      { text: '孤独な主人公。群れに馴染めない存在。', axes: { solitary: 2 } },
+      { text: '静かに生きる人。喧騒から遠い暮らし。', axes: { slow: 1, silent: 1 } },
+      { text: 'コミュニティ。仲間と生きることの美しさ。', axes: { solitary: -1 } }
+    ]
+  },
+  {
+    text: '来世について想像するとき、惹かれるイメージはどれか。',
+    choices: [
+      { text: '深い森。光が少なく、静かな場所。', axes: { wild: 2, silent: 2 } },
+      { text: '海の中。音はあるが、人の声がない。', axes: { wild: 1, slow: 1, free: 1 } },
+      { text: '空。高く、どこへでも行ける。', axes: { free: 2, wild: 1 } },
+      { text: '街の片隅。誰も知らない場所に溶け込む。', axes: { solitary: 1, silent: 1 } }
+    ]
+  },
+  {
+    text: '「責任」という概念について、どう感じているか。',
+    choices: [
+      { text: 'できれば降りたい。人格責任から自由になりたい。', axes: { free: 2, slow: 1 } },
+      { text: '大切だが、重すぎる。もう少し軽くしたい。', axes: { free: 1 } },
+      { text: '役割を持つことで、生きがいを感じる。', axes: { free: -1 } },
+      { text: '責任から逃げたことはない。それが誇り。', axes: { free: -2, solitary: -1 } }
+    ]
+  },
+  {
+    text: '知性について、近い感覚はどれか。',
+    choices: [
+      { text: '観察や思索が好き。静かに考えることが喜び。', axes: { silent: 2, slow: 1 } },
+      { text: '問題を解くことに喜びを感じる。', axes: { silent: 0, slow: 0 } },
+      { text: '言葉より、感覚や直感を信じる。', axes: { silent: 1, wild: 1 } },
+      { text: '人と話すことで思考が深まる。', axes: { silent: -1, solitary: -1 } }
+    ]
+  },
+  {
+    text: '「帰る場所」についてのイメージはどれか。',
+    choices: [
+      { text: '特定の場所より、ひとりでいられる状態が「家」だ。', axes: { solitary: 2, free: 1 } },
+      { text: '自然の中のどこか。空気と静寂がある場所。', axes: { wild: 2, silent: 1 } },
+      { text: '信頼できる人がいる場所。', axes: { solitary: -1 } },
+      { text: '動き続けること自体が、自分の場所だ。', axes: { free: 2 } }
+    ]
+  },
+  {
+    text: '来世に望むとしたら、何か。',
+    choices: [
+      { text: '人格も名前も責任も、何も持たずにいること。', axes: { free: 2, solitary: 1, silent: 1 } },
+      { text: '深く感じ、深く繋がれる能力。', axes: { solitary: 0, silent: 0 } },
+      { text: '自分のペースで生きられる時間。', axes: { slow: 2, free: 1 } },
+      { text: '今よりも、野生に近い存在でいること。', axes: { wild: 2, free: 1 } }
+    ]
+  }
+];
+
+// =====================================================
+//  STATE
+// =====================================================
+let currentQ = 0;
+let answers = new Array(QUESTIONS.length).fill(null);
+
+// axes: solitary, wild, slow, silent, free
+let scores = { solitary: 0, wild: 0, slow: 0, silent: 0, free: 0 };
+
+// =====================================================
+//  INIT SIDEBAR
+// =====================================================
+function initSidebar() {
+  const container = document.getElementById('progress-steps');
+  container.innerHTML = '';
+  QUESTIONS.forEach((q, i) => {
+    const div = document.createElement('div');
+    div.className = 'step-indicator';
+    div.id = `step-${i}`;
+    div.innerHTML = `<div class="step-dot"></div><span class="step-text">Q${String(i+1).padStart(2,'0')} ${q.text.slice(0, 14)}…</span>`;
+    container.appendChild(div);
+  });
+}
+
+// =====================================================
+//  RENDER QUESTION
+// =====================================================
+function renderQuestion(index) {
+  const q = QUESTIONS[index];
+  document.getElementById('q-counter').textContent = `Q${String(index+1).padStart(2,'0')} / ${QUESTIONS.length}`;
+  document.getElementById('q-text').textContent = q.text;
+
+  const choicesEl = document.getElementById('choices');
+  choicesEl.innerHTML = '';
+  const alphas = ['A', 'B', 'C', 'D'];
+  q.choices.forEach((c, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn' + (answers[index] === i ? ' selected' : '');
+    btn.innerHTML = `<span class="choice-alpha">${alphas[i]}</span><span class="choice-label">${c.text}</span>`;
+    btn.onclick = () => selectAnswer(index, i);
+    choicesEl.appendChild(btn);
+  });
+
+  // nav buttons
+  document.getElementById('btn-prev').disabled = index === 0;
+  document.getElementById('btn-next').disabled = answers[index] === null;
+  document.getElementById('btn-next').textContent = index === QUESTIONS.length - 1 ? '結果を見る ✦' : '次へ →';
+
+  // progress
+  const pct = (index / QUESTIONS.length) * 100;
+  document.getElementById('progress-fill').style.width = pct + '%';
+
+  // sidebar steps
+  QUESTIONS.forEach((_, i) => {
+    const el = document.getElementById(`step-${i}`);
+    if (!el) return;
+    el.className = 'step-indicator' + (i < index ? ' done' : i === index ? ' current' : '');
+  });
+
+  // leading animal preview
+  updatePreview();
+}
+
+function selectAnswer(qIndex, choiceIndex) {
+  answers[qIndex] = choiceIndex;
+  document.querySelectorAll('.choice-btn').forEach((b, i) => {
+    b.classList.toggle('selected', i === choiceIndex);
+  });
+  document.getElementById('btn-next').disabled = false;
+}
+
+function updatePreview() {
+  // quick tally to show leading animal
+  const tmp = { solitary: 0, wild: 0, slow: 0, silent: 0, free: 0 };
+  answers.forEach((ans, qi) => {
+    if (ans === null) return;
+    const axes = QUESTIONS[qi].choices[ans].axes;
+    for (const [k, v] of Object.entries(axes)) {
+      tmp[k] = (tmp[k] || 0) + v;
+    }
+  });
+  const animal = pickAnimal(tmp);
+  document.getElementById('preview-kanji').textContent = animal ? animal.kanji : '—';
+}
+
+function nextQuestion() {
+  if (answers[currentQ] === null) return;
+  if (currentQ === QUESTIONS.length - 1) {
+    showResult();
+    return;
+  }
+  // animate
+  const content = document.getElementById('q-content');
+  content.style.animation = 'none';
+  content.offsetHeight;
+  currentQ++;
+  content.style.animation = 'fadeUp 0.35s ease forwards';
+  renderQuestion(currentQ);
+}
+
+function prevQuestion() {
+  if (currentQ === 0) return;
+  currentQ--;
+  const content = document.getElementById('q-content');
+  content.style.animation = 'none';
+  content.offsetHeight;
+  content.style.animation = 'fadeUp 0.35s ease forwards';
+  renderQuestion(currentQ);
+}
+
+// =====================================================
+//  SCORING
+// =====================================================
+function calcScores() {
+  const s = { solitary: 0, wild: 0, slow: 0, silent: 0, free: 0 };
+  answers.forEach((ans, qi) => {
+    if (ans === null) return;
+    const axes = QUESTIONS[qi].choices[ans].axes;
+    for (const [k, v] of Object.entries(axes)) {
+      s[k] = (s[k] || 0) + v;
+    }
+  });
+  return s;
+}
+
+function pickAnimal(s) {
+  if (!s) return null;
+  let best = null, bestScore = -Infinity;
+  ANIMALS.forEach(animal => {
+    let score = 0;
+    for (const [k, v] of Object.entries(animal.axes)) {
+      score += (s[k] || 0) * v;
+    }
+    if (score > bestScore) { bestScore = score; best = animal; }
+  });
+  return best;
+}
+
+// =====================================================
+//  SHOW RESULT
+// =====================================================
+function showResult() {
+  scores = calcScores();
+  const animal = pickAnimal(scores);
+
+  // fill result DOM
+  document.getElementById('result-bg-kanji').textContent = animal.kanji;
+  document.getElementById('result-kanji').textContent = animal.kanji;
+  document.getElementById('result-roman').textContent = animal.roman;
+  document.getElementById('result-title').textContent = animal.title;
+  document.getElementById('result-desc').innerHTML = animal.desc;
+  document.getElementById('result-quote').textContent = animal.quote;
+
+  // traits
+  const traitsEl = document.getElementById('result-traits');
+  traitsEl.innerHTML = '';
+  animal.traits.forEach(t => {
+    const div = document.createElement('div');
+    div.className = 'trait-item';
+    div.innerHTML = `<span class="trait-icon">◆</span><span class="trait-text">${t}</span>`;
+    traitsEl.appendChild(div);
+  });
+
+  // also (close animals by id list)
+  const alsoEl = document.getElementById('result-also');
+  alsoEl.innerHTML = '';
+  animal.also.forEach(id => {
+    const a = ANIMALS.find(x => x.id === id);
+    if (!a) return;
+    const div = document.createElement('div');
+    div.className = 'also-card';
+    div.innerHTML = `<span class="also-kanji">${a.kanji}</span><span class="also-name">${a.roman}</span>`;
+    alsoEl.appendChild(div);
+  });
+
+  showScreen('result');
+  window.scrollTo(0, 0);
+}
+
+// =====================================================
+//  SCREEN TRANSITIONS
+// =====================================================
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(`screen-${id}`).classList.add('active');
+}
+
+function startQuiz() {
+  currentQ = 0;
+  answers = new Array(QUESTIONS.length).fill(null);
+  initSidebar();
+  renderQuestion(0);
+  showScreen('quiz');
+  window.scrollTo(0, 0);
+}
+
+function retry() {
+  currentQ = 0;
+  answers = new Array(QUESTIONS.length).fill(null);
+  initSidebar();
+  renderQuestion(0);
+  showScreen('quiz');
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>
