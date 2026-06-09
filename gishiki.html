@@ -389,11 +389,22 @@ footer { background:var(--ink); color:rgba(245,242,235,0.4); padding:3rem 2.5rem
   .ritual-visual { min-height: 220px; }
   .principles-grid { grid-template-columns: 1fr; }
 }
-@media (max-width: 600px) {
-  nav { padding:1rem 1.5rem; }
-  .nav-links { display:none; }
-  .rhythm-timeline::before { left: 80px; }
-  .rhythm-item { grid-template-columns: 80px 1fr; }
+@media (max-width:600px) {
+  nav {
+    padding: 0.8rem 1rem;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+
+  .nav-links {
+    display: flex;
+    width: 100%;
+    gap: 1rem;
+    overflow-x: auto;
+    padding-bottom: 0.2rem;
+    white-space: nowrap;
+  }
 }
 </style>
 </head>

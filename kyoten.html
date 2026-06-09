@@ -309,10 +309,22 @@ footer { background:var(--ink); border-top:1px solid rgba(245,242,235,0.06); col
   .glossary-item { grid-template-columns: 1fr; gap: 0.8rem; }
   .featured-quote { grid-template-columns: 1fr; gap: 1rem; }
 }
-@media (max-width: 600px) {
-  nav { padding:1rem 1.5rem; }
-  .nav-links { display:none; }
-  .words-grid { grid-template-columns: 1fr; }
+@media (max-width:600px) {
+  nav {
+    padding: 0.8rem 1rem;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+
+  .nav-links {
+    display: flex;
+    width: 100%;
+    gap: 1rem;
+    overflow-x: auto;
+    padding-bottom: 0.2rem;
+    white-space: nowrap;
+  }
 }
 </style>
 </head>

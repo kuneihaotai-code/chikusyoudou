@@ -508,12 +508,22 @@ footer {
   .policy-section { grid-template-columns: 1fr; gap: 3rem; }
   .howto-step { grid-template-columns: 60px 1fr; gap: 2rem; }
 }
-@media (max-width: 600px) {
-  nav { padding:1rem 1.5rem; }
-  .nav-links { display:none; }
-  .answer-grid { grid-template-columns: repeat(2, 1fr); }
-  .howto-step { grid-template-columns: 1fr; }
-  .step-num { font-size: 2rem; text-align: left; }
+@media (max-width:600px) {
+  nav {
+    padding: 0.8rem 1rem;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+
+  .nav-links {
+    display: flex;
+    width: 100%;
+    gap: 1rem;
+    overflow-x: auto;
+    padding-bottom: 0.2rem;
+    white-space: nowrap;
+  }
 }
 </style>
 </head>

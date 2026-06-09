@@ -60,10 +60,10 @@
       }
       @media (max-width: 600px) {
         .lang-switcher {
-          top: 4rem;
+          top: 1rem;
           right: 1rem;
         }
-        .lang-switcher button {
+        .lang-switcher button{
           padding: 0.38rem 0.44rem;
           font-size: 0.58rem;
         }
